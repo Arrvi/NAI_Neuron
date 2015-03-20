@@ -2,24 +2,134 @@
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="pja.s11531.nai.NeuronTester">
   <grid id="27dc6" binding="mainPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
     <constraints>
-      <xy x="20" y="20" width="500" height="400"/>
+      <xy x="20" y="20" width="852" height="439"/>
     </constraints>
     <properties/>
-    <border type="none"/>
+    <border type="empty">
+      <size top="10" left="10" bottom="10" right="10"/>
+    </border>
     <children>
-      <grid id="4e7a3" binding="visualizationPane" layout-manager="BorderLayout" hgap="0" vgap="0">
+      <grid id="4e7a3" binding="visualizationPane" custom-create="true" layout-manager="BorderLayout" hgap="0" vgap="0">
         <constraints border-constraint="West"/>
-        <properties/>
+        <properties>
+          <minimumSize width="200" height="200"/>
+          <preferredSize width="400" height="400"/>
+        </properties>
         <border type="none"/>
         <children/>
       </grid>
-      <grid id="2e67e" binding="configPane" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-        <margin top="0" left="0" bottom="0" right="0"/>
+      <grid id="2e67e" binding="configPane" layout-manager="GridLayoutManager" row-count="6" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="7" left="7" bottom="7" right="7"/>
         <constraints border-constraint="Center"/>
         <properties/>
-        <border type="none"/>
-        <children/>
+        <border type="line" title="Neuron config"/>
+        <children>
+          <component id="3a419" class="javax.swing.JTextField" binding="input1">
+            <constraints>
+              <grid row="0" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="200" height="24"/>
+              </grid>
+            </constraints>
+            <properties/>
+          </component>
+          <component id="5a899" class="javax.swing.JTextField" binding="input2">
+            <constraints>
+              <grid row="1" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="200" height="24"/>
+              </grid>
+            </constraints>
+            <properties/>
+          </component>
+          <component id="76b44" class="javax.swing.JTextField" binding="input3">
+            <constraints>
+              <grid row="2" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="200" height="24"/>
+              </grid>
+            </constraints>
+            <properties/>
+          </component>
+          <component id="82217" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="&lt;html&gt;X&lt;sub&gt;1&lt;/sub&gt;"/>
+            </properties>
+          </component>
+          <component id="a0945" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="&lt;html&gt;X&lt;sub&gt;2&lt;/sub&gt;"/>
+            </properties>
+          </component>
+          <component id="63aae" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="&lt;html&gt;X&lt;sub&gt;0&lt;/sub&gt;"/>
+            </properties>
+          </component>
+          <component id="74a52" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Polarity"/>
+            </properties>
+          </component>
+          <component id="e9a3e" class="javax.swing.JRadioButton" binding="unipolarRadioButton" default-binding="true">
+            <constraints>
+              <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <selected value="true"/>
+              <text value="Unipolar"/>
+            </properties>
+          </component>
+          <component id="55e2f" class="javax.swing.JRadioButton" binding="bipolarRadioButton" default-binding="true">
+            <constraints>
+              <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Bipolar"/>
+            </properties>
+          </component>
+          <component id="fbba5" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Function type"/>
+            </properties>
+          </component>
+          <component id="2c788" class="javax.swing.JComboBox" binding="functionType">
+            <constraints>
+              <grid row="3" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <model>
+                <item value="Step"/>
+                <item value="Sigmoidal / tanh"/>
+              </model>
+            </properties>
+          </component>
+          <vspacer id="4ac81">
+            <constraints>
+              <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+            </constraints>
+          </vspacer>
+        </children>
       </grid>
     </children>
   </grid>
+  <buttonGroups>
+    <group name="functionPolarity">
+      <member id="55e2f"/>
+      <member id="55e2f"/>
+      <member id="e9a3e"/>
+    </group>
+  </buttonGroups>
 </form>
