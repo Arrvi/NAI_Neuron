@@ -18,7 +18,7 @@ public class StepTransferFunction implements TransferFunction {
 
     private final int funcType;
 
-    private StepTransferFunction(int funcType) {
+    public StepTransferFunction(int funcType) {
         if ( (funcType & UNIPOLAR) != 0 && (funcType & BIPOLAR) != 0 ) {
             throw new IllegalArgumentException("Step transfer function cannot be unipolar and bipolar at the same time.");
         }

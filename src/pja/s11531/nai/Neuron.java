@@ -39,4 +39,12 @@ public class Neuron {
     public BigDecimal getBias() {
         return weights[weights.length-1];
     }
+    
+    public BigDecimal[] getWeights () {
+        return weights;
+    }
+    
+    public TransferFunction getFunc () {
+        return func;
+    }
 }
