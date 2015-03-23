@@ -20,7 +20,6 @@ public class NeuronTester {
     private JButton calculateButton;
     private JRadioButton upRadioButton;
     private JRadioButton downRadioButton;
-    private JTable learningSetsTable;
     private JTextField learningSetCenter;
     private JButton pointPickerButton;
     private JTextField learningSetVariance;
@@ -29,6 +28,7 @@ public class NeuronTester {
     private JSlider learningFactor;
     private JTextField learningEpochs;
     private JButton learnButton;
+    private JList learningSetsList;
 
     public NeuronTester() {
         calculateButton.addActionListener((actionEvent) -> calculate());
