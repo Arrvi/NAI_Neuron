@@ -1,6 +1,7 @@
 package pja.s11531.nai;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 
 /**
  * Created by s11531 on 2015-03-16.
@@ -34,6 +35,19 @@ public class Neuron {
         net = net.add(getBias().multiply(BigDecimal.ONE.negate()));
 
         return func.transfer(net);
+    }
+
+    public Neuron learn(BigDecimal[] learningSet, BigDecimal expectedValue, BigDecimal learningFactor) {
+        BigDecimal calculatedValue = calculate(learningSet);
+
+        BigDecimal[] newWeights = new BigDecimal[weights.length];
+
+        for ( int i=0; i<weights.length; ++i ) {
+            newWeights[i] = weights[i].add(
+                    expectedValue.subtract(calculatedValue).multiply(weights[i]).multiply(learningFactor));
+        }
+
+        return new Neuron(newWeights, func);
     }
 
     public BigDecimal getBias() {
