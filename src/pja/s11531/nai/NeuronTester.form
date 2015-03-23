@@ -2,7 +2,7 @@
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="pja.s11531.nai.NeuronTester">
   <grid id="27dc6" binding="mainPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
     <constraints>
-      <xy x="20" y="20" width="852" height="439"/>
+      <xy x="20" y="20" width="1038" height="685"/>
     </constraints>
     <properties/>
     <border type="empty">
@@ -18,40 +18,47 @@
         <border type="none"/>
         <children/>
       </grid>
-      <grid id="2e67e" binding="configPane" layout-manager="GridLayoutManager" row-count="8" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="2e67e" binding="configPane" layout-manager="GridLayoutManager" row-count="13" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="7" left="7" bottom="7" right="7"/>
         <constraints border-constraint="Center"/>
         <properties/>
         <border type="line" title="Neuron config"/>
         <children>
-          <component id="3a419" class="javax.swing.JTextField" binding="input1">
+          <component id="640ba" class="javax.swing.JTextField" binding="input1">
             <constraints>
               <grid row="0" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="200" height="24"/>
               </grid>
             </constraints>
             <properties>
+              <horizontalAlignment value="11"/>
               <text value="1"/>
+              <toolTipText value="First neuron input"/>
             </properties>
           </component>
-          <component id="5a899" class="javax.swing.JTextField" binding="input2">
+          <component id="c519d" class="javax.swing.JTextField" binding="input2">
             <constraints>
               <grid row="1" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="200" height="24"/>
               </grid>
             </constraints>
             <properties>
+              <horizontalAlignment value="11"/>
               <text value="1"/>
+              <toolTipText value="Second neuron input"/>
             </properties>
           </component>
-          <component id="76b44" class="javax.swing.JTextField" binding="input0">
+          <component id="b244" class="javax.swing.JTextField" binding="input0">
             <constraints>
               <grid row="2" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="200" height="24"/>
               </grid>
             </constraints>
             <properties>
+              <enabled value="true"/>
+              <horizontalAlignment value="11"/>
               <text value="0"/>
+              <toolTipText value="Third neuron input / bias"/>
             </properties>
           </component>
           <component id="82217" class="javax.swing.JLabel">
@@ -93,6 +100,7 @@
             <properties>
               <selected value="true"/>
               <text value="Unipolar"/>
+              <toolTipText value="[0, 1]"/>
             </properties>
           </component>
           <component id="55e2f" class="javax.swing.JRadioButton" binding="bipolarRadioButton" default-binding="true">
@@ -101,6 +109,7 @@
             </constraints>
             <properties>
               <text value="Bipolar"/>
+              <toolTipText value="[-1, 1]"/>
             </properties>
           </component>
           <component id="fbba5" class="javax.swing.JLabel">
@@ -161,6 +170,175 @@
               <text value="Down"/>
             </properties>
           </component>
+          <component id="fcdb4" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="9" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Center"/>
+            </properties>
+          </component>
+          <component id="9c0b1" class="javax.swing.JTextField" binding="learningSetCenter">
+            <constraints>
+              <grid row="9" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+            </constraints>
+            <properties>
+              <horizontalAlignment value="11"/>
+              <toolTipText value="Coordinates of center point (comma separated)"/>
+            </properties>
+          </component>
+          <component id="1aad2" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="8" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <font size="16"/>
+              <text value="Learning sets"/>
+            </properties>
+          </component>
+          <component id="7cec2" class="javax.swing.JButton" binding="pointPickerButton" default-binding="true">
+            <constraints>
+              <grid row="9" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Point picker"/>
+            </properties>
+          </component>
+          <component id="e1a70" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="10" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Variance"/>
+            </properties>
+          </component>
+          <component id="b9099" class="javax.swing.JTextField" binding="learningSetVariance">
+            <constraints>
+              <grid row="10" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <horizontalAlignment value="11"/>
+              <text value="10"/>
+            </properties>
+          </component>
+          <component id="781b8" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="11" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Quantity"/>
+            </properties>
+          </component>
+          <component id="c544f" class="javax.swing.JTextField" binding="learningSetQuantity">
+            <constraints>
+              <grid row="11" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <horizontalAlignment value="11"/>
+              <text value="30"/>
+            </properties>
+          </component>
+          <component id="ac5a8" class="javax.swing.JButton" binding="addLearningSet">
+            <constraints>
+              <grid row="12" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Add"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="10801" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
+        <constraints border-constraint="South"/>
+        <properties/>
+        <border type="line" title="Learning"/>
+        <children>
+          <scrollpane id="1d635">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="c158" class="javax.swing.JTable" binding="learningSetsTable">
+                <constraints/>
+                <properties>
+                  <preferredScrollableViewportSize width="400" height="100"/>
+                </properties>
+              </component>
+            </children>
+          </scrollpane>
+          <grid id="dde0d" layout-manager="GridLayoutManager" row-count="1" column-count="6" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="98ebb" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Learning factor [x0.001]"/>
+                </properties>
+              </component>
+              <hspacer id="a8d7b">
+                <constraints>
+                  <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </hspacer>
+              <component id="9e5d1" class="javax.swing.JSlider" binding="learningFactor">
+                <constraints>
+                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="200" height="-1"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <majorTickSpacing value="100"/>
+                  <maximum value="1000"/>
+                  <minimum value="0"/>
+                  <minorTickSpacing value="20"/>
+                  <paintLabels value="true"/>
+                  <paintTicks value="true"/>
+                  <paintTrack value="true"/>
+                  <snapToTicks value="false"/>
+                  <value value="100"/>
+                </properties>
+              </component>
+              <component id="2841f" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Epochs"/>
+                </properties>
+              </component>
+              <component id="bcaa6" class="javax.swing.JTextField" binding="learningEpochs">
+                <constraints>
+                  <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                    <preferred-size width="50" height="-1"/>
+                  </grid>
+                </constraints>
+                <properties>
+                  <horizontalAlignment value="11"/>
+                  <text value="10"/>
+                </properties>
+              </component>
+              <component id="3fcab" class="javax.swing.JButton" binding="learnButton" default-binding="true">
+                <constraints>
+                  <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Learn"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
         </children>
       </grid>
     </children>
