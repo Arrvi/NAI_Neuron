@@ -4,20 +4,24 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Ellipse2D;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 
 /**
  * Created by Kris on 2015-03-20.
  */
 public class VisualizationPanel extends JPanel {
-    private int markSize = 2;
+    protected static final BigDecimal TWO      = new BigDecimal( 2 );
+    private                int        markSize = 2;
     private Neuron       neuron;
     private MouseAdapter mouseAdapter;
     
-    private int defaultScale = 10;
-    private BigDecimal range = BigDecimal.TEN.setScale( defaultScale, BigDecimal.ROUND_HALF_UP );
-    private final BigDecimal doubleRange = range.multiply( new BigDecimal( 2 ) );
+    private       int        defaultScale = 10;
+    private       BigDecimal range        = BigDecimal.TEN.setScale( defaultScale, BigDecimal.ROUND_HALF_UP );
+    private final BigDecimal doubleRange  = range.multiply( TWO );
+    private List<LearningSetFactory> learningSets;
     
     public VisualizationPanel () {
         super( null );
@@ -29,6 +33,9 @@ public class VisualizationPanel extends JPanel {
         super.paintComponent( g );
         
         Graphics2D g2d = ( (Graphics2D) g );
+        g2d.setRenderingHint(
+                RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON );
         
         g2d.drawLine( unitsToWidth( BigDecimal.ZERO ), unitsToHeight( range.negate() ), unitsToWidth( BigDecimal.ZERO ), unitsToHeight( range ) );
         g2d.drawLine( unitsToWidth( range.negate() ), unitsToHeight( BigDecimal.ZERO ), unitsToWidth( range ), unitsToHeight( BigDecimal.ZERO ) );
@@ -61,7 +68,7 @@ public class VisualizationPanel extends JPanel {
             g2d.drawString( bdy.toPlainString(), w0 + markSize + 2, y + 5 );
             g2d.drawString( bdny.toPlainString(), w0 + markSize + 2, ny + 5 );
         }
-    
+        
         for ( int x = -9; x <= 9; ++x ) {
             if ( x == 0 ) continue;
             for ( int y = -9; y <= 9; ++y ) {
@@ -71,8 +78,30 @@ public class VisualizationPanel extends JPanel {
             }
         }
         
-        if ( neuron == null ) return;
+        if ( neuron != null ) drawNeuron( g2d );
         
+        if ( learningSets != null && !learningSets.isEmpty() ) drawLearningSets( g2d );
+    }
+    
+    private void drawLearningSets ( Graphics2D g2d ) {
+        for ( LearningSetFactory set : learningSets ) {
+            int x = unitsToWidth( set.getX() );
+            int y = unitsToHeight( set.getY() );
+            int xRadius = unitsToLength( set.getVariance() );
+            int yRadius = unitsToLength( set.getVariance() );
+    
+            g2d.setColor( set.getMemberClass().equals( BigDecimal.ONE ) ? Color.GREEN.darker() : Color.RED.darker() );
+            g2d.fill( new Ellipse2D.Double( x, y, 3, 3 ) );
+            g2d.draw( new Ellipse2D.Double(
+                    x-xRadius,
+                    y-yRadius,
+                    xRadius*2,
+                    yRadius*2 ) );
+            g2d.drawLine( x, y, x+xRadius, y );
+        }
+    }
+    
+    private void drawNeuron ( Graphics2D g2d ) {
         BigDecimal[] weights = neuron.getWeights();
         if ( weights.length != 3 ) {
             g2d.setColor( Color.RED );
@@ -81,31 +110,31 @@ public class VisualizationPanel extends JPanel {
         }
         
         double diagonalRatio = getHeight() / getWidth();
-        BigDecimal w1 = weights[0].setScale( defaultScale, BigDecimal.ROUND_HALF_UP ), 
-                w2 = weights[1].setScale( defaultScale, BigDecimal.ROUND_HALF_UP ), 
+        BigDecimal w1 = weights[0].setScale( defaultScale, BigDecimal.ROUND_HALF_UP ),
+                w2 = weights[1].setScale( defaultScale, BigDecimal.ROUND_HALF_UP ),
                 w0 = weights[2].setScale( defaultScale, BigDecimal.ROUND_HALF_UP );
         
         g2d.setColor( Color.BLUE.darker() );
         
         if ( !w1.equals( BigDecimal.ZERO ) || !w2.equals( BigDecimal.ZERO ) ) {
-            BigDecimal 
-                    a12 = w1.divide( w2, BigDecimal.ROUND_HALF_UP ), 
+            BigDecimal
+                    a12 = w1.divide( w2, BigDecimal.ROUND_HALF_UP ),
                     b02 = w0.divide( w2, BigDecimal.ROUND_HALF_UP ),
                     a21 = w2.divide( w1, BigDecimal.ROUND_HALF_UP ),
                     b01 = w0.divide( w1, BigDecimal.ROUND_HALF_UP );
             if ( w1.equals( BigDecimal.ZERO ) || a12.doubleValue() <= diagonalRatio ) {
-                g2d.drawLine( 
-                        unitsToWidth( range.negate() ), 
-                        unitsToHeight( a12.multiply( range.negate() ).negate().add( b02 ) ), 
-                        unitsToWidth( range ), 
+                g2d.drawLine(
+                        unitsToWidth( range.negate() ),
+                        unitsToHeight( a12.multiply( range.negate() ).negate().add( b02 ) ),
+                        unitsToWidth( range ),
                         unitsToHeight( a12.multiply( range ).negate().add( b02 ) ) );
             }
             else {
-                g2d.drawLine( 
+                g2d.drawLine(
                         unitsToWidth( a21.multiply( range.negate() ).negate().add( b01 ) ),
                         unitsToHeight( range.negate() ),
                         unitsToWidth( a21.multiply( range ).negate().add( b01 ) ),
-                        unitsToHeight( range ));
+                        unitsToHeight( range ) );
             }
         }
         
@@ -121,11 +150,11 @@ public class VisualizationPanel extends JPanel {
                     g2d.setColor( Color.RED.darker() );
                 }
                 
-                g2d.drawString( val.setScale( 
-                                neuron.getFunc().getClass().isAssignableFrom( StepTransferFunction.class ) ? 0 : 2, 
-                                RoundingMode.HALF_UP ).toPlainString(), 
-                        unitsToWidth( point[0] )+2,
-                        unitsToHeight( point[1] )-2 );
+                g2d.drawString( val.setScale(
+                                neuron.getFunc().getClass().isAssignableFrom( StepTransferFunction.class ) ? 0 : 2,
+                                RoundingMode.HALF_UP ).toPlainString(),
+                        unitsToWidth( point[0] ) + 2,
+                        unitsToHeight( point[1] ) - 2 );
             }
         }
     }
@@ -165,27 +194,30 @@ public class VisualizationPanel extends JPanel {
         BigDecimal out = new BigDecimal( x );
         out = out.setScale( defaultScale, BigDecimal.ROUND_HALF_UP )
                  .multiply( doubleRange )
-                .divide( new BigDecimal( getWidth() ), BigDecimal.ROUND_HALF_UP )
-                .subtract( range );
+                 .divide( new BigDecimal( getWidth() ), BigDecimal.ROUND_HALF_UP )
+                 .subtract( range );
         return out;
     }
-    private BigDecimal heightToUnits( int y ) {
+    
+    private BigDecimal heightToUnits ( int y ) {
         BigDecimal out = new BigDecimal( y );
         out = out.setScale( defaultScale, BigDecimal.ROUND_HALF_UP )
                  .multiply( doubleRange )
-                .divide( new BigDecimal( getHeight() ), BigDecimal.ROUND_HALF_UP )
-                .subtract( range )
-                .negate();
+                 .divide( new BigDecimal( getHeight() ), BigDecimal.ROUND_HALF_UP )
+                 .subtract( range )
+                 .negate();
         return out;
     }
-    private int unitsToWidth(BigDecimal x) {
+    
+    private int unitsToWidth ( BigDecimal x ) {
         return x.setScale( defaultScale, BigDecimal.ROUND_HALF_UP )
-                .add(range)
+                .add( range )
                 .divide( doubleRange, BigDecimal.ROUND_HALF_UP )
                 .multiply( new BigDecimal( getWidth() ) )
                 .intValue();
     }
-    private int unitsToHeight(BigDecimal y) {
+    
+    private int unitsToHeight ( BigDecimal y ) {
         return y.setScale( defaultScale, BigDecimal.ROUND_HALF_UP )
                 .negate()
                 .add( range )
@@ -193,7 +225,8 @@ public class VisualizationPanel extends JPanel {
                 .multiply( new BigDecimal( getHeight() ) )
                 .intValue();
     }
-    private int unitsToLength(BigDecimal s) {
+    
+    private int unitsToLength ( BigDecimal s ) {
         return s.setScale( defaultScale, BigDecimal.ROUND_HALF_UP )
                 .divide( doubleRange, BigDecimal.ROUND_HALF_UP )
                 .multiply( new BigDecimal( getWidth() ) )
@@ -206,6 +239,11 @@ public class VisualizationPanel extends JPanel {
     
     public void setNeuron ( Neuron neuron ) {
         this.neuron = neuron;
+        repaint();
+    }
+    
+    public void setLearningSets ( List<LearningSetFactory> elements ) {
+        learningSets = elements;
         repaint();
     }
     
