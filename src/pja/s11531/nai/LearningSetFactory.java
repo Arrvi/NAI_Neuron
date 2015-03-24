@@ -53,4 +53,8 @@ public class LearningSetFactory {
                 y.doubleValue(),
                 variance.doubleValue());
     }
+    
+    public void setNewSeed () {
+        // TODO add randomisation
+    }
 }

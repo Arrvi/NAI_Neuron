@@ -1,5 +1,7 @@
 package pja.s11531.nai;
 
+import com.sun.xml.internal.ws.api.model.MEP;
+
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -55,7 +57,48 @@ public class NeuronTester {
             }
         } );
         learningSetsList.setModel( listModel );
-        learningSetMemberClassCombo.addActionListener( (evt) -> setMemberClass() );
+        learningSetMemberClassCombo.addActionListener( ( evt ) -> setMemberClass() );
+        learningSetsList.addMouseListener( new MouseAdapter() {
+            JPopupMenu menu = new JPopupMenu();
+            {
+                JMenuItem item;
+                item = new JMenuItem( "Randomize" );
+                item.addActionListener( (evt)->randomize() );
+                menu.add( item );
+                item = new JMenuItem( "Delete" );
+                item.addActionListener( (evt)->deleteItem() );
+                menu.add( item );
+            }
+    
+            private void deleteItem () {
+                listModel.removeElementAt( learningSetsList.getSelectedIndex() );
+                updateLearningSets();
+            }
+    
+            private void randomize () {
+                learningSetsList.getSelectedValue().setNewSeed();
+                updateLearningSets();
+            }
+    
+            @Override
+            public void mousePressed ( MouseEvent e ) {
+                popupCheck( e );
+            }
+    
+            @Override
+            public void mouseReleased ( MouseEvent e ) {
+                popupCheck( e );
+            }
+    
+            private void popupCheck ( MouseEvent e ) {
+                if ( !e.isPopupTrigger() ) {
+                    return;
+                }
+                JList list = (JList) e.getSource();
+                list.setSelectedIndex( list.locationToIndex( e.getPoint() ) );
+                menu.show( list, e.getX(), e.getY() );
+            }
+        } );
     }
     
     private void parseAndAddLearningSet () throws Exception {
@@ -90,7 +133,7 @@ public class NeuronTester {
         }
         
         memberClass = new BigDecimal( learningSetMemberClass.getText() );
-            
+        
         addLearningSet( x, y, variance, quantity, memberClass );
         learningSetCenter.setText( "" );
     }
@@ -108,8 +151,12 @@ public class NeuronTester {
     private void addLearningSet ( BigDecimal x, BigDecimal y, BigDecimal variance, BigInteger quantity, BigDecimal memberClass ) {
         LearningSetFactory factory = new LearningSetFactory( x, y, variance, quantity, memberClass );
         listModel.addElement( factory );
-        
-        visualizationPane.setLearningSets( Collections.list( listModel.elements() ));
+    
+        updateLearningSets();
+    }
+    
+    private void updateLearningSets () {
+        visualizationPane.setLearningSets( Collections.list( listModel.elements() ) );
     }
     
     public static void main ( String[] args ) {
