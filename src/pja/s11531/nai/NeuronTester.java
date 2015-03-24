@@ -7,31 +7,33 @@ import java.math.BigDecimal;
  * Created by s11531 on 2015-03-19.
  */
 public class NeuronTester {
-    private static JFrame       frame;
-    private        JPanel       mainPanel;
-    private        JPanel       visualizationPane;
-    private        JPanel       configPane;
-    private        JTextField   input1;
-    private        JTextField   input2;
-    private        JTextField   input0;
-    private        JRadioButton unipolarRadioButton;
-    private        JRadioButton bipolarRadioButton;
-    private        JComboBox    functionType;
-    private        JButton      calculateButton;
-    private        JRadioButton upRadioButton;
-    private        JRadioButton downRadioButton;
-    private        JTextField   learningSetCenter;
-    private        JButton      pointPickerButton;
-    private        JTextField   learningSetVariance;
-    private        JTextField   learningSetQuantity;
-    private        JButton      addLearningSet;
-    private        JSlider      learningFactor;
-    private        JTextField   learningEpochs;
-    private        JButton      learnButton;
-    private        JList        learningSetsList;
+    private static JFrame             frame;
+    private        JPanel             mainPanel;
+    private        VisualizationPanel visualizationPane;
+    private        JPanel             configPane;
+    private        JTextField         input1;
+    private        JTextField         input2;
+    private        JTextField         input0;
+    private        JRadioButton       unipolarRadioButton;
+    private        JRadioButton       bipolarRadioButton;
+    private        JComboBox          functionType;
+    private        JButton            calculateButton;
+    private        JRadioButton       upRadioButton;
+    private        JRadioButton       downRadioButton;
+    private        JTextField         learningSetCenter;
+    private        JButton            pointPickerButton;
+    private        JTextField         learningSetVariance;
+    private        JTextField         learningSetQuantity;
+    private        JButton            addLearningSet;
+    private        JSlider            learningFactor;
+    private        JTextField         learningEpochs;
+    private        JButton            learnButton;
+    private        JList              learningSetsList;
+    private        JComboBox          comboBox1;
     
     public NeuronTester () {
-        calculateButton.addActionListener( ( actionEvent ) -> calculate() );
+        calculateButton.addActionListener( ( evt ) -> calculate() );
+        pointPickerButton.addActionListener( ( evt ) -> startPointPicker() );
     }
     
     public static void main ( String[] args ) {
@@ -47,10 +49,6 @@ public class NeuronTester {
         frame.pack();
         frame.setVisible( true );
         frame.setResizable( false );
-    }
-    
-    private void createUIComponents () {
-        visualizationPane = new VisualizationPanel();
     }
     
     private void calculate () {
@@ -70,6 +68,14 @@ public class NeuronTester {
             return;
         }
         
-        ( (VisualizationPanel) visualizationPane ).setNeuron( neuron );
+        visualizationPane.setNeuron( neuron );
+    }
+    
+    private void startPointPicker () {
+        visualizationPane.startPointPicker(
+                ( x, y ) -> learningSetCenter.setText(
+                        String.format( "%s, %s",
+                                x.setScale( 2, BigDecimal.ROUND_HALF_UP ).toPlainString(),
+                                y.setScale( 2, BigDecimal.ROUND_HALF_UP ).toPlainString() ) ) );
     }
 }
