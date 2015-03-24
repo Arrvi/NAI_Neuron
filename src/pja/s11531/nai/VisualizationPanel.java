@@ -61,7 +61,7 @@ public class VisualizationPanel extends JPanel {
         
         g2d.setColor( Color.BLUE.darker() );
         
-        if ( w1 != 0 && w2 != 0 ) {
+        if ( w1 != 0 || w2 != 0 ) {
             if ( w1 == 0 || w1 / w2 <= diagonalRatio ) {
                 g2d.drawLine( 0, getHeight()-(int) (( 10*w1/w2 + w0/w2 + 10 )*step), getWidth(), getHeight()-(int) (( -10*w1/w2 + w0/w2 + 10)*step) );
             }
