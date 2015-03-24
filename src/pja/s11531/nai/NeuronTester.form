@@ -9,7 +9,7 @@
       <size top="10" left="10" bottom="10" right="10"/>
     </border>
     <children>
-      <grid id="2e67e" binding="configPane" layout-manager="GridLayoutManager" row-count="13" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="2e67e" binding="configPane" layout-manager="GridLayoutManager" row-count="14" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="7" left="7" bottom="7" right="7"/>
         <constraints border-constraint="Center"/>
         <properties/>
@@ -233,13 +233,13 @@
           </component>
           <component id="ac5a8" class="javax.swing.JButton" binding="addLearningSet">
             <constraints>
-              <grid row="12" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <grid row="13" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <text value="Add"/>
             </properties>
           </component>
-          <component id="404bf" class="javax.swing.JComboBox" binding="comboBox1" default-binding="true">
+          <component id="404bf" class="javax.swing.JComboBox" binding="distributionFunction">
             <constraints>
               <grid row="10" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -252,6 +252,39 @@
               </model>
               <toolTipText value="Distribution function"/>
             </properties>
+          </component>
+          <component id="eb8ad" class="javax.swing.JButton" binding="clearButton" default-binding="true">
+            <constraints>
+              <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Clear"/>
+            </properties>
+          </component>
+          <component id="89fd4" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="12" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Member class"/>
+            </properties>
+          </component>
+          <component id="36fcd" class="javax.swing.JComboBox" binding="learningSetMemberClassCombo">
+            <constraints>
+              <grid row="12" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <model>
+                <item value="HIGH"/>
+                <item value="LOW"/>
+              </model>
+            </properties>
+          </component>
+          <component id="8e53b" class="javax.swing.JTextField" binding="learningSetMemberClass">
+            <constraints>
+              <grid row="12" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties/>
           </component>
         </children>
       </grid>

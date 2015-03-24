@@ -58,8 +58,17 @@ public class VisualizationPanel extends JPanel {
             g2d.drawLine( w0 - markSize, ny, w0 + markSize, ny );
             
             if ( iy != 1 ) continue;
-            g2d.drawString( bdy.toPlainString(), w0 + markSize + 8, y + 5 );
-            g2d.drawString( bdny.toPlainString(), w0 + markSize + 8, ny + 5 );
+            g2d.drawString( bdy.toPlainString(), w0 + markSize + 2, y + 5 );
+            g2d.drawString( bdny.toPlainString(), w0 + markSize + 2, ny + 5 );
+        }
+    
+        for ( int x = -9; x <= 9; ++x ) {
+            if ( x == 0 ) continue;
+            for ( int y = -9; y <= 9; ++y ) {
+                if ( y == 0 ) continue;
+                
+                g2d.drawRect( unitsToWidth( new BigDecimal( x ) ), unitsToHeight( new BigDecimal( y ) ), 1, 1 );
+            }
         }
         
         if ( neuron == null ) return;
@@ -100,8 +109,8 @@ public class VisualizationPanel extends JPanel {
             }
         }
         
-        for ( int x = -9; x < 9; ++x ) {
-            for ( int y = -9; y < 9; ++y ) {
+        for ( int x = -9; x <= 9; ++x ) {
+            for ( int y = -9; y <= 9; ++y ) {
                 BigDecimal[] point = { new BigDecimal( x ), new BigDecimal( y ) };
                 BigDecimal val = neuron.calculate( point );
                 
@@ -115,8 +124,8 @@ public class VisualizationPanel extends JPanel {
                 g2d.drawString( val.setScale( 
                                 neuron.getFunc().getClass().isAssignableFrom( StepTransferFunction.class ) ? 0 : 2, 
                                 RoundingMode.HALF_UP ).toPlainString(), 
-                        unitsToWidth( point[0] ),
-                        unitsToHeight( point[1] ) );
+                        unitsToWidth( point[0] )+2,
+                        unitsToHeight( point[1] )-2 );
             }
         }
     }
@@ -130,7 +139,13 @@ public class VisualizationPanel extends JPanel {
                 if ( e.getSource() != VisualizationPanel.this ) return;
                 
                 if ( e.getButton() == MouseEvent.BUTTON1 ) {
-                    callback.callback( widthToUnits( e.getX() ), heightToUnits( e.getY() ) );
+                    BigDecimal x = widthToUnits( e.getX() );
+                    BigDecimal y = heightToUnits( e.getY() );
+                    if ( !e.isShiftDown() ) {
+                        x = x.setScale( 0, BigDecimal.ROUND_HALF_UP );
+                        y = y.setScale( 0, BigDecimal.ROUND_HALF_UP );
+                    }
+                    callback.callback( x, y );
                 }
                 
                 stopPointPicker();
@@ -173,9 +188,15 @@ public class VisualizationPanel extends JPanel {
     private int unitsToHeight(BigDecimal y) {
         return y.setScale( defaultScale, BigDecimal.ROUND_HALF_UP )
                 .negate()
-                .add(range)
+                .add( range )
                 .divide( doubleRange, BigDecimal.ROUND_HALF_UP )
                 .multiply( new BigDecimal( getHeight() ) )
+                .intValue();
+    }
+    private int unitsToLength(BigDecimal s) {
+        return s.setScale( defaultScale, BigDecimal.ROUND_HALF_UP )
+                .divide( doubleRange, BigDecimal.ROUND_HALF_UP )
+                .multiply( new BigDecimal( getWidth() ) )
                 .intValue();
     }
     
