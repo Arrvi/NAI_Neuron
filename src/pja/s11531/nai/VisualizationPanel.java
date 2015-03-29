@@ -85,8 +85,10 @@ public class VisualizationPanel extends JPanel {
     
     private void drawLearningSets ( Graphics2D g2d ) {
         for ( LearningSetFactory set : learningSets ) {
-            int x = unitsToWidth( set.getX() );
-            int y = unitsToHeight( set.getY() );
+            if ( set.getCenter().length != 2 ) return;
+            
+            int x = unitsToWidth( set.getCenter()[0] );
+            int y = unitsToHeight( set.getCenter()[1] );
             int xRadius = unitsToLength( set.getVariance() );
             int yRadius = unitsToLength( set.getVariance() );
     

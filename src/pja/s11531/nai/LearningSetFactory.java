@@ -1,43 +1,73 @@
 package pja.s11531.nai;
 
+import com.sun.deploy.util.StringUtils;
+
 import java.math.BigDecimal;
-import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Created by Kris on 2015-03-24.
  */
 public class LearningSetFactory {
-    private final BigDecimal x;
-    private final BigDecimal y;
-    private final BigDecimal variance;
-    private final BigInteger quantity;
-    private final BigDecimal memberClass;
+    private final BigDecimal[]         center;
+    private final BigDecimal           variance;
+    private final int                  quantity;
+    private final BigDecimal           memberClass;
+    private final DistributionFunction distribution;
+    private       Random               random;
     
-    public LearningSetFactory ( BigDecimal x, BigDecimal y, BigDecimal variance, BigInteger quantity, BigDecimal memberClass ) {
-        this.x = x;
-        this.y = y;
+    public LearningSetFactory ( BigDecimal[] center, BigDecimal variance, int quantity, BigDecimal memberClass,
+                                DistributionFunction distribution )
+    {
+        this.center = center;
         this.variance = variance;
         this.quantity = quantity;
         this.memberClass = memberClass;
+        this.distribution = distribution;
+        
+        setNewSeed();
     }
     
-    public BigDecimal[] getLearningSet () {
-        return null; // TODO Learning set generator
+    public LearningElement[] getLearningSet () {
+        LearningElement[] elements = new LearningElement[quantity];
+        for ( int i = 0; i < quantity; i++ ) {
+            BigDecimal radius = new BigDecimal( distribution.distribute( random.nextDouble() * variance.doubleValue() ) );
+            double[] angle = random.doubles( center.length, 0, Math.PI * 2 )
+                                   .toArray();
+            BigDecimal[] coordinates = IntStream.range( 0, center.length )
+                                                .parallel()
+                                                .mapToObj( xi -> {
+                                                    BigDecimal x = IntStream.range( 0, xi )
+                                                                            .parallel()
+                                                                            .mapToObj( ri -> new BigDecimal( Math.sin( angle[ri] ) ) )
+                                                                            .reduce( BigDecimal
+                                                                                            .ONE,
+                                                                                    BigDecimal::multiply );
+                                                    if ( xi < center.length - 1 ) {
+                                                        x = x.multiply( new BigDecimal( Math.cos( angle[xi] ) ) );
+                                                    }
+                                                    return x.add( center[xi] );
+                                                } )
+                                                .map( x -> x.multiply( radius ) )
+                                                .collect( Collectors.toList() )
+                                                .toArray( new BigDecimal[center.length] );
+            elements[i] = new LearningElement( coordinates, memberClass );
+        }
+        return elements;
     }
     
-    public BigDecimal getX () {
-        return x;
-    }
-    
-    public BigDecimal getY () {
-        return y;
+    public BigDecimal[] getCenter () {
+        return center;
     }
     
     public BigDecimal getVariance () {
         return variance;
     }
     
-    public BigInteger getQuantity () {
+    public int getQuantity () {
         return quantity;
     }
     
@@ -47,14 +77,19 @@ public class LearningSetFactory {
     
     @Override
     public String toString () {
-        return String.format( "Learning set factory: %d objects [%.2f, %.2f] variance: %.2f", 
-                quantity.intValue(), 
-                x.doubleValue(), 
-                y.doubleValue(),
-                variance.doubleValue());
+        return String.format( "Learning set factory: %d objects [%s] variance: %.2f",
+                quantity,
+                StringUtils.join( Arrays.asList( Arrays.stream( center )
+                                                       .map( n -> n.setScale( 2, BigDecimal.ROUND_HALF_UP ) )
+                                                       .toArray() ), ", " ),
+                variance.doubleValue() );
     }
     
     public void setNewSeed () {
-        // TODO add randomisation
+        random = new Random();
+    }
+    
+    public void setNewSeed ( long seed ) {
+        random = new Random( seed );
     }
 }

@@ -1,7 +1,5 @@
 package pja.s11531.nai;
 
-import com.sun.xml.internal.ws.api.model.MEP;
-
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -112,7 +110,7 @@ public class NeuronTester {
         BigDecimal x;
         BigDecimal y;
         BigDecimal variance;
-        BigInteger quantity;
+        int quantity;
         BigDecimal memberClass;
         
         x = new BigDecimal( coords[0] );
@@ -126,7 +124,7 @@ public class NeuronTester {
         if ( learningSetQuantity.getText().length() == 0 ) {
             learningSetQuantity.setText( "0" );
         }
-        quantity = new BigInteger( learningSetQuantity.getText() );
+        quantity = Integer.parseInt( learningSetQuantity.getText() );
         
         if ( learningSetMemberClass.getText().length() == 0 ) {
             setMemberClass();
@@ -134,7 +132,17 @@ public class NeuronTester {
         
         memberClass = new BigDecimal( learningSetMemberClass.getText() );
         
-        addLearningSet( x, y, variance, quantity, memberClass );
+        @SuppressWarnings("unchecked") 
+        Class<? extends DistributionFunction>[] funcs = new Class[] {
+                Distribution.Uniform.class,
+                Distribution.Linear.class,
+                Distribution.Exponential.class,
+                Distribution.InvertedExponential.class
+        };
+        
+        DistributionFunction distribution = funcs[distributionFunction.getSelectedIndex()].newInstance();
+        
+        addLearningSet( x, y, variance, quantity, memberClass, distribution );
         learningSetCenter.setText( "" );
     }
     
@@ -148,8 +156,9 @@ public class NeuronTester {
         learningSetMemberClass.setText( mClass );
     }
     
-    private void addLearningSet ( BigDecimal x, BigDecimal y, BigDecimal variance, BigInteger quantity, BigDecimal memberClass ) {
-        LearningSetFactory factory = new LearningSetFactory( x, y, variance, quantity, memberClass );
+    private void addLearningSet ( BigDecimal x, BigDecimal y, BigDecimal variance, int quantity, BigDecimal memberClass,
+                                  DistributionFunction distribution ) {
+        LearningSetFactory factory = new LearningSetFactory( new BigDecimal[]{x,y}, variance, quantity, memberClass, distribution );
         listModel.addElement( factory );
     
         updateLearningSets();
