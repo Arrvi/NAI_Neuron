@@ -134,8 +134,8 @@ public class NeuronTester {
         
         @SuppressWarnings("unchecked") 
         Class<? extends DistributionFunction>[] funcs = new Class[] {
-                Distribution.Uniform.class,
                 Distribution.Linear.class,
+                Distribution.Uniform.class,
                 Distribution.Exponential.class,
                 Distribution.InvertedExponential.class
         };

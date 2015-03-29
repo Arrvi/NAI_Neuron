@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Point2D;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -69,14 +70,17 @@ public class VisualizationPanel extends JPanel {
             g2d.drawString( bdny.toPlainString(), w0 + markSize + 2, ny + 5 );
         }
         
-        for ( int x = -9; x <= 9; ++x ) {
-            if ( x == 0 ) continue;
-            for ( int y = -9; y <= 9; ++y ) {
-                if ( y == 0 ) continue;
-                
-                g2d.drawRect( unitsToWidth( new BigDecimal( x ) ), unitsToHeight( new BigDecimal( y ) ), 1, 1 );
-            }
-        }
+//        for ( int x = -9; x <= 9; ++x ) {
+//            if ( x == 0 ) continue;
+//            for ( int y = -9; y <= 9; ++y ) {
+//                if ( y == 0 ) continue;
+//    
+//                int px = unitsToWidth( new BigDecimal( x ) );
+//                int py = unitsToHeight( new BigDecimal( y ) );
+//                
+//                g2d.drawLine( px, py, px, py );
+//            }
+//        }
         
         if ( neuron != null ) drawNeuron( g2d );
         
@@ -92,14 +96,24 @@ public class VisualizationPanel extends JPanel {
             int xRadius = unitsToLength( set.getVariance() );
             int yRadius = unitsToLength( set.getVariance() );
     
-            g2d.setColor( set.getMemberClass().equals( BigDecimal.ONE ) ? Color.GREEN.darker() : Color.RED.darker() );
+            g2d.setColor( set.getMemberClass()
+                             .equals( BigDecimal.ONE ) ? Color.GREEN.darker() : Color.RED.darker() );
             g2d.fill( new Ellipse2D.Double( x, y, 3, 3 ) );
             g2d.draw( new Ellipse2D.Double(
-                    x-xRadius,
-                    y-yRadius,
-                    xRadius*2,
-                    yRadius*2 ) );
-            g2d.drawLine( x, y, x+xRadius, y );
+                    x - xRadius,
+                    y - yRadius,
+                    xRadius * 2,
+                    yRadius * 2 ) );
+            g2d.drawLine( x, y, x + xRadius, y );
+            
+//            if (set.getQuantity() > 1000) return;
+    
+            for ( LearningElement learningElement : set.getLearningSet() ) {
+                int ex = unitsToWidth(learningElement.getArguments()[0]);
+                int ey = unitsToHeight( learningElement.getArguments()[1] );
+                
+                g2d.drawLine(ex,ey,ex,ey);
+            }
         }
     }
     

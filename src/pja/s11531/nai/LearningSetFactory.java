@@ -18,6 +18,7 @@ public class LearningSetFactory {
     private final BigDecimal           memberClass;
     private final DistributionFunction distribution;
     private       Random               random;
+    private LearningElement[] learningSet;
     
     public LearningSetFactory ( BigDecimal[] center, BigDecimal variance, int quantity, BigDecimal memberClass,
                                 DistributionFunction distribution )
@@ -32,9 +33,16 @@ public class LearningSetFactory {
     }
     
     public LearningElement[] getLearningSet () {
-        LearningElement[] elements = new LearningElement[quantity];
+        if ( learningSet == null )
+            generateLearningSet();
+        
+        return learningSet;
+    }
+    
+    private void generateLearningSet () {
+        learningSet = new LearningElement[quantity];
         for ( int i = 0; i < quantity; i++ ) {
-            BigDecimal radius = new BigDecimal( distribution.distribute( random.nextDouble() * variance.doubleValue() ) );
+            BigDecimal radius = new BigDecimal( distribution.distribute( random.nextDouble() ) * variance.doubleValue() );
             double[] angle = random.doubles( center.length, 0, Math.PI * 2 )
                                    .toArray();
             BigDecimal[] coordinates = IntStream.range( 0, center.length )
@@ -49,14 +57,13 @@ public class LearningSetFactory {
                                                     if ( xi < center.length - 1 ) {
                                                         x = x.multiply( new BigDecimal( Math.cos( angle[xi] ) ) );
                                                     }
-                                                    return x.add( center[xi] );
+                                                    return x.multiply( radius )
+                                                            .add( center[xi] );
                                                 } )
-                                                .map( x -> x.multiply( radius ) )
                                                 .collect( Collectors.toList() )
                                                 .toArray( new BigDecimal[center.length] );
-            elements[i] = new LearningElement( coordinates, memberClass );
+            learningSet[i] = new LearningElement( coordinates, memberClass );
         }
-        return elements;
     }
     
     public BigDecimal[] getCenter () {
@@ -80,16 +87,18 @@ public class LearningSetFactory {
         return String.format( "Learning set factory: %d objects [%s] variance: %.2f",
                 quantity,
                 StringUtils.join( Arrays.asList( Arrays.stream( center )
-                                                       .map( n -> n.setScale( 2, BigDecimal.ROUND_HALF_UP ) )
+                                                       .map( n -> n.setScale( 2, BigDecimal.ROUND_HALF_UP ).toPlainString() )
                                                        .toArray() ), ", " ),
                 variance.doubleValue() );
     }
     
     public void setNewSeed () {
         random = new Random();
+        learningSet = null;
     }
     
     public void setNewSeed ( long seed ) {
         random = new Random( seed );
+        learningSet = null;
     }
 }
