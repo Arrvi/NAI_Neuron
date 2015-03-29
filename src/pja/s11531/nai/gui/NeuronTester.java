@@ -1,4 +1,6 @@
-package pja.s11531.nai;
+package pja.s11531.nai.gui;
+
+import pja.s11531.nai.*;
 
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
@@ -7,13 +9,13 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import static pja.s11531.nai.VisualizationPanel.DrawOption.*;
+import static pja.s11531.nai.gui.VisualizationPanel.DrawOption.*;
 
 /**
  * Created by s11531 on 2015-03-19.
  */
 public class NeuronTester {
-    private static JFrame frame;
+    private JFrame frame;
     private DefaultListModel<LearningSetFactory> listModel = new DefaultListModel<>();
     private JPanel                    mainPanel;
     private VisualizationPanel        visualizationPane;
@@ -204,21 +206,6 @@ public class NeuronTester {
         visualizationPane.setLearningSets( Collections.list( listModel.elements() ) );
     }
     
-    public static void main ( String[] args ) {
-        try {
-            UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
-        } catch ( ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e ) {
-            e.printStackTrace();
-        }
-        
-        frame = new JFrame( "NeuronTester" );
-        frame.setContentPane( new NeuronTester().mainPanel );
-        frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-        frame.pack();
-        frame.setVisible( true );
-        frame.setResizable( false );
-    }
-    
     private void calculate () {
         try {
             TransferFunction func = new StepTransferFunction(
@@ -255,18 +242,25 @@ public class NeuronTester {
         pointPickerButton.setText( "Pick a point" );
         pointPickerButton.setEnabled( false );
         
-        frame.getContentPane()
-             .addMouseListener( new MouseAdapter() {
-                 @Override
-                 public void mouseClicked ( MouseEvent e ) {
-                     super.mouseClicked( e );
-                     if ( e.getSource() == visualizationPane ) return;
-                     visualizationPane.stopPointPicker();
-                     frame.getContentPane()
-                          .removeMouseListener( this );
-                     pointPickerButton.setText( orgButtonText );
-                     pointPickerButton.setEnabled( true );
-                 }
-             } );
+        frame.addMouseListener( new MouseAdapter() {
+            @Override
+            public void mouseClicked ( MouseEvent e ) {
+                super.mouseClicked( e );
+                if ( e.getSource() == visualizationPane ) return;
+                visualizationPane.stopPointPicker();
+                frame.getContentPane()
+                     .removeMouseListener( this );
+                pointPickerButton.setText( orgButtonText );
+                pointPickerButton.setEnabled( true );
+            }
+        } );
+    }
+    
+    public JPanel getMainPanel () {
+        return mainPanel;
+    }
+    
+    public void setFrame ( JFrame frame ) {
+        this.frame = frame;
     }
 }

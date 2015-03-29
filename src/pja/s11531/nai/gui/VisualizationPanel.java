@@ -1,4 +1,9 @@
-package pja.s11531.nai;
+package pja.s11531.nai.gui;
+
+import pja.s11531.nai.LearningElement;
+import pja.s11531.nai.LearningSetFactory;
+import pja.s11531.nai.Neuron;
+import pja.s11531.nai.StepTransferFunction;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,12 +15,12 @@ import java.math.RoundingMode;
 import java.util.EnumSet;
 import java.util.List;
 
-import static pja.s11531.nai.VisualizationPanel.DrawOption.*;
+import static pja.s11531.nai.gui.VisualizationPanel.DrawOption.*;
 
 /**
  * Created by Kris on 2015-03-20.
  */
-public class VisualizationPanel extends JPanel {
+public class VisualizationPanel extends JComponent {
     protected static final BigDecimal TWO      = new BigDecimal( 2 );
     private                int        markSize = 2;
     private Neuron       neuron;
@@ -103,7 +108,7 @@ public class VisualizationPanel extends JPanel {
     }
     
     public VisualizationPanel () {
-        super( null );
+        super();
         setMinimumSize( new Dimension( 400, 400 ) );
     }
     

@@ -1,4 +1,8 @@
-package pja.s11531.nai;
+package pja.s11531.nai.gui;
+
+import pja.s11531.nai.LearningSetFactory;
+import pja.s11531.nai.Neuron;
+import pja.s11531.nai.Teacher;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -7,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import static pja.s11531.nai.VisualizationPanel.DrawOption.*;
+import static pja.s11531.nai.gui.VisualizationPanel.DrawOption.*;
 
 public class LearningDialog extends JDialog {
     private JPanel             contentPane;
@@ -111,7 +115,7 @@ public class LearningDialog extends JDialog {
             Neuron currentState = neuron;
             for ( int epoch = 0; epoch < epochs; epoch++ ) {
                 int error = 0;
-                Teacher teacher = new Teacher( currentState, factories.toArray(new LearningSetFactory[factories.size()]), learningFactor );
+                Teacher teacher = new Teacher( currentState, factories.toArray( new LearningSetFactory[factories.size()] ), learningFactor );
                 currentState = teacher.call();
                 error += teacher.getError( currentState );
                 BigDecimal difference = history.get( history.size() - 1 )
@@ -128,7 +132,7 @@ public class LearningDialog extends JDialog {
                     break;
                 }
                 if ( error == 0 ) {
-                    System.out.println( "No error. Ending now.");
+                    System.out.println( "No error. Ending now." );
                     break;
                 }
             }
