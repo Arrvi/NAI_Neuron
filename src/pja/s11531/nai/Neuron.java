@@ -81,7 +81,7 @@ public class Neuron {
     
     @Override
     public String toString () {
-        return String.format( "Neuron [%s], func=%s}",
+        return String.format( "Neuron [%s], func=%s",
                 Arrays.stream( weights )
                       .map( w -> w.setScale( 2, BigDecimal.ROUND_HALF_UP )
                                   .toPlainString() )

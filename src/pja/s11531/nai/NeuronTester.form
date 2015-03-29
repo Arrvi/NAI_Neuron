@@ -382,7 +382,10 @@
       </grid>
       <component id="2bfa" class="pja.s11531.nai.VisualizationPanel" binding="visualizationPane">
         <constraints border-constraint="West"/>
-        <properties/>
+        <properties>
+          <minimumSize width="400" height="400"/>
+          <preferredSize width="400" height="400"/>
+        </properties>
       </component>
     </children>
   </grid>

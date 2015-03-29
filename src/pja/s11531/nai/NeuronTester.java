@@ -6,8 +6,8 @@ import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
+
+import static pja.s11531.nai.VisualizationPanel.DrawOption.*;
 
 /**
  * Created by s11531 on 2015-03-19.
@@ -108,6 +108,8 @@ public class NeuronTester {
             }
         } );
         learnButton.addActionListener( ( evt ) -> learn() );
+        
+        visualizationPane.setDrawOptions( DRAW_GRID, DRAW_POINT_GRID, DRAW_LEARNING_SET_POINTS, DRAW_LEARNING_SET_CIRCLE, DRAW_LEARNING_SET_RADIUS );
     }
     
     private void learn () {
@@ -115,52 +117,10 @@ public class NeuronTester {
         
         int epochs = Integer.parseInt( learningEpochs.getText() );
         BigDecimal learningFactor = new BigDecimal( learningFactorSlider.getValue() / 1000.0 );
+        ArrayList<LearningSetFactory> factories = Collections.list( listModel.elements() );
         
-        new SwingWorker<List<Neuron>, Integer>() {
-            
-            @Override
-            protected List<Neuron> doInBackground () throws Exception {
-                ArrayList<LearningSetFactory> factories = Collections.list( listModel.elements() );
-                List<Neuron> history = new ArrayList<>();
-                history.add( neuron );
-                Neuron currentState = neuron;
-                for ( int epoch = 0; epoch < epochs; epoch++ ) {
-                    for ( LearningSetFactory factory : factories ) {
-                        currentState = new Teacher( currentState, factory, learningFactor ).call();
-                    }
-                    BigDecimal difference = history.get( history.size() - 1 )
-                                                   .difference( currentState )
-                                                   .setScale( 10, BigDecimal.ROUND_HALF_UP );
-                    System.out.printf( "Epoch %d difference: %s%n", epoch, difference.toPlainString() );
-                    history.add( currentState );
-                    publish( epoch );
-                    if ( difference.compareTo( BigDecimal.ZERO ) == 0 ) {
-                        System.out.println("No difference. Ending now.");
-                        break;
-                    }
-                }
-                return history;
-            }
-            
-            @Override
-            protected void process ( List<Integer> chunks ) {
-                for ( Integer epoch : chunks ) {
-//                    System.out.printf( "Learning, epoch %d%n", epoch );
-                }
-            }
-            
-            @Override
-            protected void done () {
-                try {
-                    System.out.println( "Learning completed. History:" );
-                    for ( Neuron learningState : get() ) {
-                        System.out.println( learningState.toString() );
-                    }
-                } catch ( InterruptedException | ExecutionException e ) {
-                    e.printStackTrace();
-                }
-            }
-        }.execute();
+        LearningDialog dialog = new LearningDialog( factories, neuron, epochs, learningFactor );
+        dialog.setVisible( true );
     }
     
     private void parseAndAddLearningSet () throws Exception {
