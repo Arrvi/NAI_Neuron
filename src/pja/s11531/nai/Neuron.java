@@ -1,6 +1,8 @@
 package pja.s11531.nai;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * Created by s11531 on 2015-03-16.
@@ -43,7 +45,9 @@ public class Neuron {
         
         for ( int i = 0; i < weights.length; ++i ) {
             newWeights[i] = weights[i].add(
-                    expectedValue.subtract( calculatedValue ).multiply( weights[i] ).multiply( learningFactor ) );
+                    expectedValue.subtract( calculatedValue )
+                                 .multiply( ( i < weights.length - 1 ) ? learningSet[i] : BigDecimal.ONE.negate() )
+                                 .multiply( learningFactor ) );
         }
         
         return new Neuron( newWeights, func );
@@ -59,5 +63,29 @@ public class Neuron {
     
     public TransferFunction getFunc () {
         return func;
+    }
+    
+    public BigDecimal difference (Neuron toCompare) {
+        if ( toCompare.weights.length != weights.length ) {
+            throw new IllegalArgumentException( "Cannot calculate difference between neurons with different number of inputs" );
+        }
+        
+        BigDecimal result = BigDecimal.ZERO;
+    
+        for ( int i = 0; i < weights.length; i++ ) {
+            result = result.add( weights[i].subtract( toCompare.weights[i] ).abs() );
+        }
+        
+        return result;
+    }
+    
+    @Override
+    public String toString () {
+        return String.format( "Neuron [%s], func=%s}",
+                Arrays.stream( weights )
+                      .map( w -> w.setScale( 2, BigDecimal.ROUND_HALF_UP )
+                                  .toPlainString() )
+                      .collect( Collectors.joining( ", " ) ),
+                func.toString() );
     }
 }

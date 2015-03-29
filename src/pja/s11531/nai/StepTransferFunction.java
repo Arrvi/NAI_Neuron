@@ -64,4 +64,9 @@ public class StepTransferFunction implements TransferFunction {
     public boolean isBipolar () {
         return !isUnipolar();
     }
+    
+    @Override
+    public String toString () {
+        return String.format( "StepTransferFunction: %s %s", isBipolar() ? "bipolar" : "unipolar", isCeil() ? "ceil" : "floor" );
+    }
 }

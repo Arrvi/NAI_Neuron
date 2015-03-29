@@ -4,14 +4,16 @@ import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
-import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by s11531 on 2015-03-19.
  */
 public class NeuronTester {
-    private static JFrame                    frame;
+    private static JFrame frame;
     private DefaultListModel<LearningSetFactory> listModel = new DefaultListModel<>();
     private JPanel                    mainPanel;
     private VisualizationPanel        visualizationPane;
@@ -30,27 +32,33 @@ public class NeuronTester {
     private JTextField                learningSetVariance;
     private JTextField                learningSetQuantity;
     private JButton                   addLearningSet;
-    private JSlider                   learningFactor;
+    private JSlider                   learningFactorSlider;
     private JTextField                learningEpochs;
     private JButton                   learnButton;
     private JList<LearningSetFactory> learningSetsList;
     private JComboBox                 distributionFunction;
     private JButton                   clearButton;
-    private JComboBox  learningSetMemberClassCombo;
-    private JTextField learningSetMemberClass;
+    private JComboBox                 learningSetMemberClassCombo;
+    private JTextField                learningSetMemberClass;
+    private Neuron                    neuron;
     
     public NeuronTester () {
-        calculateButton.addActionListener( ( evt ) -> calculate() );
+        calculateButton.addActionListener( ( evt ) -> {
+            calculate();
+            learnButton.setEnabled( true );
+        } );
+        clearButton.addActionListener( ( evt ) -> {
+            neuron = null;
+            visualizationPane.setNeuron( null );
+            learnButton.setEnabled( false );
+        } );
         pointPickerButton.addActionListener( ( evt ) -> startPointPicker() );
-        clearButton.addActionListener( ( evt ) -> visualizationPane.setNeuron( null ) );
         addLearningSet.addActionListener( ( evt ) -> {
             try {
                 parseAndAddLearningSet();
-            } 
-            catch (NumberFormatException e) {
+            } catch ( NumberFormatException e ) {
                 JOptionPane.showMessageDialog( frame, "Invalid number format", "Error", JOptionPane.ERROR_MESSAGE );
-            }
-            catch ( Exception e ) {
+            } catch ( Exception e ) {
                 JOptionPane.showMessageDialog( frame, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE );
             }
         } );
@@ -58,36 +66,38 @@ public class NeuronTester {
         learningSetMemberClassCombo.addActionListener( ( evt ) -> setMemberClass() );
         learningSetsList.addMouseListener( new MouseAdapter() {
             JPopupMenu menu = new JPopupMenu();
+            
             {
                 JMenuItem item;
                 item = new JMenuItem( "Randomize" );
-                item.addActionListener( (evt)->randomize() );
+                item.addActionListener( ( evt ) -> randomize() );
                 menu.add( item );
                 item = new JMenuItem( "Delete" );
-                item.addActionListener( (evt)->deleteItem() );
+                item.addActionListener( ( evt ) -> deleteItem() );
                 menu.add( item );
             }
-    
+            
             private void deleteItem () {
                 listModel.removeElementAt( learningSetsList.getSelectedIndex() );
                 updateLearningSets();
             }
-    
+            
             private void randomize () {
-                learningSetsList.getSelectedValue().setNewSeed();
+                learningSetsList.getSelectedValue()
+                                .setNewSeed();
                 updateLearningSets();
             }
-    
+            
             @Override
             public void mousePressed ( MouseEvent e ) {
                 popupCheck( e );
             }
-    
+            
             @Override
             public void mouseReleased ( MouseEvent e ) {
                 popupCheck( e );
             }
-    
+            
             private void popupCheck ( MouseEvent e ) {
                 if ( !e.isPopupTrigger() ) {
                     return;
@@ -97,13 +107,70 @@ public class NeuronTester {
                 menu.show( list, e.getX(), e.getY() );
             }
         } );
+        learnButton.addActionListener( ( evt ) -> learn() );
+    }
+    
+    private void learn () {
+        if ( neuron == null ) return;
+        
+        int epochs = Integer.parseInt( learningEpochs.getText() );
+        BigDecimal learningFactor = new BigDecimal( learningFactorSlider.getValue() / 1000.0 );
+        
+        new SwingWorker<List<Neuron>, Integer>() {
+            
+            @Override
+            protected List<Neuron> doInBackground () throws Exception {
+                ArrayList<LearningSetFactory> factories = Collections.list( listModel.elements() );
+                List<Neuron> history = new ArrayList<>();
+                history.add( neuron );
+                Neuron currentState = neuron;
+                for ( int epoch = 0; epoch < epochs; epoch++ ) {
+                    for ( LearningSetFactory factory : factories ) {
+                        currentState = new Teacher( currentState, factory, learningFactor ).call();
+                    }
+                    BigDecimal difference = history.get( history.size() - 1 )
+                                                   .difference( currentState )
+                                                   .setScale( 10, BigDecimal.ROUND_HALF_UP );
+                    System.out.printf( "Epoch %d difference: %s%n", epoch, difference.toPlainString() );
+                    history.add( currentState );
+                    publish( epoch );
+                    if ( difference.compareTo( BigDecimal.ZERO ) == 0 ) {
+                        System.out.println("No difference. Ending now.");
+                        break;
+                    }
+                }
+                return history;
+            }
+            
+            @Override
+            protected void process ( List<Integer> chunks ) {
+                for ( Integer epoch : chunks ) {
+//                    System.out.printf( "Learning, epoch %d%n", epoch );
+                }
+            }
+            
+            @Override
+            protected void done () {
+                try {
+                    System.out.println( "Learning completed. History:" );
+                    for ( Neuron learningState : get() ) {
+                        System.out.println( learningState.toString() );
+                    }
+                } catch ( InterruptedException | ExecutionException e ) {
+                    e.printStackTrace();
+                }
+            }
+        }.execute();
     }
     
     private void parseAndAddLearningSet () throws Exception {
-        if ( learningSetCenter.getText().length() == 0 ) {
+        if ( learningSetCenter.getText()
+                              .length() == 0 )
+        {
             throw new Exception( "Center point has to be specified" );
         }
-        String[] coords = learningSetCenter.getText().split( ",\\s*" );
+        String[] coords = learningSetCenter.getText()
+                                           .split( ",\\s*" );
         if ( coords.length != 2 ) {
             throw new Exception( "Wrong point format. There should be 2 numbers separated by comma" );
         }
@@ -116,23 +183,29 @@ public class NeuronTester {
         x = new BigDecimal( coords[0] );
         y = new BigDecimal( coords[1] );
         
-        if ( learningSetVariance.getText().length() == 0 ) {
+        if ( learningSetVariance.getText()
+                                .length() == 0 )
+        {
             learningSetVariance.setText( "0" );
         }
         variance = new BigDecimal( learningSetVariance.getText() );
         
-        if ( learningSetQuantity.getText().length() == 0 ) {
+        if ( learningSetQuantity.getText()
+                                .length() == 0 )
+        {
             learningSetQuantity.setText( "0" );
         }
         quantity = Integer.parseInt( learningSetQuantity.getText() );
         
-        if ( learningSetMemberClass.getText().length() == 0 ) {
+        if ( learningSetMemberClass.getText()
+                                   .length() == 0 )
+        {
             setMemberClass();
         }
         
         memberClass = new BigDecimal( learningSetMemberClass.getText() );
         
-        @SuppressWarnings("unchecked") 
+        @SuppressWarnings("unchecked")
         Class<? extends DistributionFunction>[] funcs = new Class[] {
                 Distribution.Linear.class,
                 Distribution.Uniform.class,
@@ -148,7 +221,9 @@ public class NeuronTester {
     
     private void setMemberClass () {
         String mClass;
-        if ( learningSetMemberClassCombo.getModel().getSelectedItem().equals( "HIGH" ) ) mClass = "1";
+        if ( learningSetMemberClassCombo.getModel()
+                                        .getSelectedItem()
+                                        .equals( "HIGH" ) ) mClass = "1";
         else {
             if ( unipolarRadioButton.isSelected() ) mClass = "0";
             else mClass = "-1";
@@ -157,10 +232,11 @@ public class NeuronTester {
     }
     
     private void addLearningSet ( BigDecimal x, BigDecimal y, BigDecimal variance, int quantity, BigDecimal memberClass,
-                                  DistributionFunction distribution ) {
-        LearningSetFactory factory = new LearningSetFactory( new BigDecimal[]{x,y}, variance, quantity, memberClass, distribution );
+                                  DistributionFunction distribution )
+    {
+        LearningSetFactory factory = new LearningSetFactory( new BigDecimal[] { x, y }, variance, quantity, memberClass, distribution );
         listModel.addElement( factory );
-    
+        
         updateLearningSets();
     }
     
@@ -184,7 +260,6 @@ public class NeuronTester {
     }
     
     private void calculate () {
-        Neuron neuron;
         try {
             TransferFunction func = new StepTransferFunction(
                     ( unipolarRadioButton.isSelected() ? StepTransferFunction.UNIPOLAR : StepTransferFunction.BIPOLAR ) |
@@ -209,8 +284,10 @@ public class NeuronTester {
                 ( x, y ) -> {
                     learningSetCenter.setText(
                             String.format( "%s, %s",
-                                    x.setScale( 2, BigDecimal.ROUND_HALF_UP ).toPlainString(),
-                                    y.setScale( 2, BigDecimal.ROUND_HALF_UP ).toPlainString() ) );
+                                    x.setScale( 2, BigDecimal.ROUND_HALF_UP )
+                                     .toPlainString(),
+                                    y.setScale( 2, BigDecimal.ROUND_HALF_UP )
+                                     .toPlainString() ) );
                     pointPickerButton.setText( orgButtonText );
                     pointPickerButton.setEnabled( true );
                 } );
@@ -218,16 +295,18 @@ public class NeuronTester {
         pointPickerButton.setText( "Pick a point" );
         pointPickerButton.setEnabled( false );
         
-        frame.getContentPane().addMouseListener( new MouseAdapter() {
-            @Override
-            public void mouseClicked ( MouseEvent e ) {
-                super.mouseClicked( e );
-                if ( e.getSource() == visualizationPane ) return;
-                visualizationPane.stopPointPicker();
-                frame.getContentPane().removeMouseListener( this );
-                pointPickerButton.setText( orgButtonText );
-                pointPickerButton.setEnabled( true );
-            }
-        } );
+        frame.getContentPane()
+             .addMouseListener( new MouseAdapter() {
+                 @Override
+                 public void mouseClicked ( MouseEvent e ) {
+                     super.mouseClicked( e );
+                     if ( e.getSource() == visualizationPane ) return;
+                     visualizationPane.stopPointPicker();
+                     frame.getContentPane()
+                          .removeMouseListener( this );
+                     pointPickerButton.setText( orgButtonText );
+                     pointPickerButton.setEnabled( true );
+                 }
+             } );
     }
 }

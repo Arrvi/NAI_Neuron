@@ -1,7 +1,5 @@
 package pja.s11531.nai;
 
-import com.sun.deploy.util.StringUtils;
-
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Random;
@@ -18,7 +16,7 @@ public class LearningSetFactory {
     private final BigDecimal           memberClass;
     private final DistributionFunction distribution;
     private       Random               random;
-    private LearningElement[] learningSet;
+    private       LearningElement[]    learningSet;
     
     public LearningSetFactory ( BigDecimal[] center, BigDecimal variance, int quantity, BigDecimal memberClass,
                                 DistributionFunction distribution )
@@ -84,12 +82,14 @@ public class LearningSetFactory {
     
     @Override
     public String toString () {
-        return String.format( "Learning set factory: %d objects [%s] variance: %.2f",
+        return String.format( "Learning set factory: %d objects [center at %s] variance: %.2f, class: %s",
                 quantity,
-                StringUtils.join( Arrays.asList( Arrays.stream( center )
-                                                       .map( n -> n.setScale( 2, BigDecimal.ROUND_HALF_UP ).toPlainString() )
-                                                       .toArray() ), ", " ),
-                variance.doubleValue() );
+                Arrays.stream( center )
+                      .map( n -> n.setScale( 2, BigDecimal.ROUND_HALF_UP )
+                                  .toPlainString() )
+                      .collect( Collectors.joining( ", " ) ),
+                variance.doubleValue(),
+                memberClass.toPlainString() );
     }
     
     public void setNewSeed () {
