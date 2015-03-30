@@ -24,6 +24,8 @@ public class LearningDialog extends JDialog {
     private JLabel status;
     private JLabel result;
     private JButton loadBackButton;
+    private SimpleGraph differenceGraph;
+    private SimpleGraph errorGraph;
 
     private List<LearningSetFactory> factories;
     private Neuron                   neuron;
@@ -68,6 +70,9 @@ public class LearningDialog extends JDialog {
             visualizationPanel.setDrawOptions( DRAW_LARGER_LEARNING_SET_POINTS );
         visualizationPanel.setLearningSets( factories );
         visualizationPanel.setNeuron( neuron );
+        
+        differenceGraph.setDataCount(epochs);
+        errorGraph.setDataCount(epochs);
         
         pack();
         learn();
@@ -116,6 +121,11 @@ public class LearningDialog extends JDialog {
             history.add( neuron );
             Neuron currentState = neuron;
             for ( int epoch = 0; epoch < epochs; epoch++ ) {
+                if ( isCancelled() ) {
+                    System.out.println("Cancelled.");
+                    break;
+                }
+                
                 int error = 0;
                 Teacher teacher = new Teacher( currentState, factories.toArray( new LearningSetFactory[factories.size()] ), learningFactor );
                 currentState = teacher.call();
@@ -149,6 +159,11 @@ public class LearningDialog extends JDialog {
             differenceField.setText( report.getDifference()
                                            .toPlainString() );
             errorField.setText( String.valueOf( report.getErrors() ) );
+
+            for (LearningReport chunk : chunks) {
+                differenceGraph.addRecord(chunk.getDifference());
+                errorGraph.addRecord(new BigDecimal(chunk.getErrors()));
+            }
         }
     
         @Override
