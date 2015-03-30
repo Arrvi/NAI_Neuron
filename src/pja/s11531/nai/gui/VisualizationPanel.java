@@ -307,13 +307,11 @@ public class VisualizationPanel extends JComponent {
                 w0 = weights[2].setScale( defaultScale, BigDecimal.ROUND_HALF_UP );
         
         
-        if ( !w1.equals( BigDecimal.ZERO ) || !w2.equals( BigDecimal.ZERO ) ) {
-            BigDecimal
-                    a12 = w1.divide( w2, BigDecimal.ROUND_HALF_UP ),
-                    b02 = w0.divide( w2, BigDecimal.ROUND_HALF_UP ),
-                    a21 = w2.divide( w1, BigDecimal.ROUND_HALF_UP ),
-                    b01 = w0.divide( w1, BigDecimal.ROUND_HALF_UP );
-            if ( w1.equals( BigDecimal.ZERO ) || a12.doubleValue() <= diagonalRatio ) {
+        if ( w1.compareTo( BigDecimal.ZERO ) != 0 || w2.compareTo( BigDecimal.ZERO ) != 0 ) {
+            if ( w1.compareTo( BigDecimal.ZERO ) == 0 || w2.divide( w1, BigDecimal.ROUND_HALF_UP ).doubleValue() > diagonalRatio ) {
+                BigDecimal
+                        a12 = w1.divide( w2, BigDecimal.ROUND_HALF_UP ),
+                        b02 = w0.divide( w2, BigDecimal.ROUND_HALF_UP );
                 g2d.drawLine(
                         unitsToWidth( range.negate() ),
                         unitsToHeight( a12.multiply( range.negate() )
@@ -325,6 +323,9 @@ public class VisualizationPanel extends JComponent {
                                           .add( b02 ) ) );
             }
             else {
+                BigDecimal
+                        a21 = w2.divide( w1, BigDecimal.ROUND_HALF_UP ),
+                        b01 = w0.divide( w1, BigDecimal.ROUND_HALF_UP );
                 g2d.drawLine(
                         unitsToWidth( a21.multiply( range.negate() )
                                          .negate()
