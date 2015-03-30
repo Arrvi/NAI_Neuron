@@ -23,13 +23,15 @@ public class LearningDialog extends JDialog {
     private VisualizationPanel visualizationPanel;
     private JLabel status;
     private JLabel result;
-    
+    private JButton loadBackButton;
+
     private List<LearningSetFactory> factories;
     private Neuron                   neuron;
     private int                      epochs;
     private BigDecimal               learningFactor;
-    
-    public LearningDialog ( List<LearningSetFactory> factories, Neuron neuron, int epochs, BigDecimal learningFactor ) {
+    private List<Neuron> learningHistory;
+
+    public LearningDialog ( NeuronTester parent, List<LearningSetFactory> factories, Neuron neuron, int epochs, BigDecimal learningFactor ) {
         this.factories = factories;
         this.neuron = neuron;
         this.epochs = epochs;
@@ -39,6 +41,10 @@ public class LearningDialog extends JDialog {
         setModal( true );
         
         buttonCancel.addActionListener( e -> onCancel() );
+        loadBackButton.addActionListener( e -> {
+            parent.loadNeuron(learningHistory.get(learningHistory.size()-1));
+            dispose();
+        });
 
 // call onCancel() when cross is clicked
         setDefaultCloseOperation( DO_NOTHING_ON_CLOSE );
@@ -49,11 +55,7 @@ public class LearningDialog extends JDialog {
         } );
 
 // call onCancel() on ESCAPE
-        contentPane.registerKeyboardAction( new ActionListener() {
-            public void actionPerformed ( ActionEvent e ) {
-                onCancel();
-            }
-        }, KeyStroke.getKeyStroke( KeyEvent.VK_ESCAPE, 0 ), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT );
+        contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke( KeyEvent.VK_ESCAPE, 0 ), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT );
         
         learningWorker.addPropertyChangeListener( ( evt ) -> {
             if ( evt.getPropertyName()
@@ -154,11 +156,12 @@ public class LearningDialog extends JDialog {
             try {
                 System.out.println( "Learning completed." );
                 setProgress( 100 );
-                List<Neuron> history = get();
-                visualizationPanel.setLearningHistory( history );
+                learningHistory = get();
+                visualizationPanel.setLearningHistory(learningHistory);
                 status.setText( isCancelled() ? "Cancelled." : "Done." );
-                result.setText( history.get( history.size() - 1 )
+                result.setText( learningHistory.get(learningHistory.size() - 1)
                                        .toString() );
+                loadBackButton.setEnabled(true);
             } catch ( InterruptedException | ExecutionException e ) {
                 e.printStackTrace();
             }

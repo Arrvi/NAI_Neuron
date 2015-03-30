@@ -121,7 +121,7 @@ public class NeuronTester {
         BigDecimal learningFactor = new BigDecimal( learningFactorSlider.getValue() / 1000.0 );
         ArrayList<LearningSetFactory> factories = Collections.list( listModel.elements() );
         
-        LearningDialog dialog = new LearningDialog( factories, neuron, epochs, learningFactor );
+        LearningDialog dialog = new LearningDialog( this, factories, neuron, epochs, learningFactor );
         dialog.setVisible( true );
     }
     
@@ -262,5 +262,18 @@ public class NeuronTester {
     
     public void setFrame ( JFrame frame ) {
         this.frame = frame;
+    }
+
+    public void setDrawOption(VisualizationPanel.DrawOption option, boolean value) {
+        visualizationPane.setDrawOption(option, value);
+    }
+
+    public void loadNeuron(Neuron neuron) {
+        if ( neuron.getWeights().length != 3 ) throw new IllegalArgumentException("Only 2D neurons!");
+
+        input1.setText(neuron.getWeights()[0].setScale(5, BigDecimal.ROUND_HALF_UP).toPlainString());
+        input2.setText(neuron.getWeights()[1].setScale(5, BigDecimal.ROUND_HALF_UP).toPlainString());
+        input0.setText(neuron.getWeights()[2].setScale(5, BigDecimal.ROUND_HALF_UP).toPlainString());
+        calculate();
     }
 }

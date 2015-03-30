@@ -79,6 +79,8 @@ public class VisualizationPanel extends JComponent {
             drawOptions.add( option );
         else
             drawOptions.remove( option );
+
+        repaint();
     }
     
     public void setDrawOptions ( DrawOption... options ) {
@@ -274,8 +276,8 @@ public class VisualizationPanel extends JComponent {
         drawNeuronLine( g2d, weights );
         
         if ( option( DRAW_NEURON_VALUES_GRID ) )
-            for ( int x = -9; x <= 9; ++x ) {
-                for ( int y = -9; y <= 9; ++y ) {
+            for ( int x = range.negate().intValue()+1; x <= range.intValue(); ++x ) {
+                for ( int y = range.negate().intValue()+1; y <= range.intValue(); ++y ) {
                     BigDecimal[] point = { new BigDecimal( x ), new BigDecimal( y ) };
                     BigDecimal val = neuron.calculate( point );
                     

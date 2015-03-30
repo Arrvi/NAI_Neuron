@@ -14,7 +14,8 @@ import java.awt.event.KeyEvent;
 public class NeuronGUI {
     
     private final JFrame frame;
-    
+    private final NeuronTester neuronTester;
+
     public static void main ( String[] args ) {
         UIUtilities.setSystemLookAndFeel();
         SwingUtilities.invokeLater( NeuronGUI::new );
@@ -22,10 +23,10 @@ public class NeuronGUI {
     
     public NeuronGUI () {
         frame = new JFrame( "Neuron GUI" );
-    
-        NeuronTester neuronTester = new NeuronTester();
-        neuronTester.setFrame( frame );
-        frame.setContentPane( neuronTester.getMainPanel() );
+
+        neuronTester = new NeuronTester();
+        neuronTester.setFrame(frame);
+        frame.setContentPane(neuronTester.getMainPanel());
         frame.setResizable( false );
         frame.setJMenuBar( createJMenuBar() );
         UIUtilities.packAndShow( frame );
@@ -69,7 +70,7 @@ public class NeuronGUI {
         
         @Override
         public void actionPerformed ( ActionEvent e ) {
-            
+            neuronTester.setDrawOption(VisualizationPanel.DrawOption.DRAW_NEURON_VALUES_GRID, ((JCheckBoxMenuItem) e.getSource()).isSelected());
         }
     };
     
@@ -81,7 +82,7 @@ public class NeuronGUI {
     
         @Override
         public void actionPerformed ( ActionEvent e ) {
-        
+            neuronTester.setDrawOption(VisualizationPanel.DrawOption.DRAW_LARGER_LEARNING_SET_POINTS, ((JCheckBoxMenuItem) e.getSource()).isSelected());
         }
     };
 }
