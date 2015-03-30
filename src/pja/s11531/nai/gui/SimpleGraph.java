@@ -13,6 +13,7 @@ import java.util.List;
 public class SimpleGraph extends JComponent {
     private List<BigDecimal> data;
     private int dataCount = -1;
+    private boolean log = true;
 
     public SimpleGraph() {
         data = new ArrayList<>();
@@ -54,7 +55,20 @@ public class SimpleGraph extends JComponent {
         }
         g2d.setPaint(gradient);
         graph.addPoint((int) (step*data.size()-1), getHeight());
-        
+
+        g2d.fillPolygon(graph);
+
+
+        gradient = new GradientPaint(0, 0, new Color(0x33FF0000, true),
+                0, getHeight(), new Color(0x00000000, true));
+        graph = new Polygon();
+        graph.addPoint(0, getHeight());
+        for (int i = 0; i < data.size(); i++) {
+            graph.addPoint((int) (step * i), (int)Math.log(getHeight() - getHeight() * (data.get(i).doubleValue() / max / 2)));
+        }
+        g2d.setPaint(gradient);
+        graph.addPoint((int) (step*data.size()-1), getHeight());
+
         g2d.fillPolygon(graph);
     }
 

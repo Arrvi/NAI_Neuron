@@ -42,6 +42,7 @@ public class NeuronTester {
     private JButton                   clearButton;
     private JComboBox                 learningSetMemberClassCombo;
     private JTextField                learningSetMemberClass;
+    private JCheckBox divideFactor;
     private Neuron                    neuron;
     
     public NeuronTester () {
@@ -119,6 +120,10 @@ public class NeuronTester {
         
         int epochs = Integer.parseInt( learningEpochs.getText() );
         BigDecimal learningFactor = new BigDecimal( learningFactorSlider.getValue() / 1000.0 );
+        if (learningFactor.compareTo(BigDecimal.ONE) < 0 ) learningFactor = new BigDecimal(0.001);
+        if ( divideFactor.isSelected() ) 
+            learningFactor = learningFactor.divide(new BigDecimal(1000), BigDecimal.ROUND_HALF_UP);
+        
         ArrayList<LearningSetFactory> factories = Collections.list( listModel.elements() );
         
         LearningDialog dialog = new LearningDialog( this, factories, neuron, epochs, learningFactor );
