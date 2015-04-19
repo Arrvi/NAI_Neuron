@@ -33,9 +33,9 @@ public class Teacher implements Callable<Neuron> {
         Collections.shuffle( elements );
         
         for ( LearningElement element : elements ) {
-            BigDecimal error = element.getValue()
-                                      .subtract( currentState.calculate( element.getArguments() ) );
-            currentState = currentState.learn( element.getArguments(), error, learningFactor );
+            BigDecimal error = element.getOutput()[0]
+                                      .subtract( currentState.calculate( element.getInput() )[0] );
+            currentState = currentState.learn( element.getInput(), error, learningFactor );
         }
         
         return currentState;
@@ -45,8 +45,8 @@ public class Teacher implements Callable<Neuron> {
         int error = 0;
         for ( LearningSetFactory factory : factories )
             for ( LearningElement element : factory.getLearningSet() ) {
-                BigDecimal value = neuron.calculate( element.getArguments() );
-                if ( value.compareTo( element.getValue() ) != 0 ) error++;
+                BigDecimal value = neuron.calculate( element.getInput() )[0];
+                if ( value.compareTo( element.getOutput()[0] ) != 0 ) error++;
             }
         return error;
     }

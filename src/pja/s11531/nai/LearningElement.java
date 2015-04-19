@@ -8,31 +8,36 @@ import java.util.stream.Collectors;
  * Created by Kris on 2015-03-28.
  */
 public class LearningElement {
-    private final BigDecimal[] arguments;
-    private final BigDecimal   value;
+    private final BigDecimal[] input;
+    private final BigDecimal[] output;
     
-    public LearningElement ( BigDecimal[] arguments, BigDecimal value ) {
-        this.arguments = arguments;
-        this.value = value;
+    public LearningElement ( BigDecimal[] input, BigDecimal[] output ) {
+        this.input = input;
+        this.output = output;
     }
     
-    public BigDecimal[] getArguments () {
-        return arguments;
+    public BigDecimal[] getInput () {
+        return input;
     }
     
-    public BigDecimal getValue () {
-        return value;
+    public BigDecimal[] getOutput () {
+        return output;
     }
     
     @Override
     public String toString () {
         return String.format( "[%s] -> %s",
-                Arrays.stream( arguments )
+                Arrays.stream( input )
                       .sequential()
                       .map( x -> x.setScale( 2, BigDecimal.ROUND_HALF_UP )
                                   .toPlainString() )
                       .collect(
                               Collectors.joining( ", " ) ),
-                value.toPlainString() );
+                Arrays.stream( output )
+                      .sequential()
+                      .map( x -> x.setScale( 2, BigDecimal.ROUND_HALF_UP )
+                                  .toPlainString() )
+                      .collect(
+                              Collectors.joining( ", " ) ) );
     }
 }

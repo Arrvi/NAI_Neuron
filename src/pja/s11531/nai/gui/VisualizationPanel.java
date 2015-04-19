@@ -252,8 +252,8 @@ public class VisualizationPanel extends JComponent {
             
             if ( option( DRAW_LEARNING_SET_POINTS ) )
                 for ( LearningElement learningElement : set.getLearningSet() ) {
-                    int ex = unitsToWidth( learningElement.getArguments()[0] );
-                    int ey = unitsToHeight( learningElement.getArguments()[1] );
+                    int ex = unitsToWidth( learningElement.getInput()[0] );
+                    int ey = unitsToHeight( learningElement.getInput()[1] );
                     
                     if ( option( DRAW_LARGER_LEARNING_SET_POINTS ) )
                         g2d.fill( new Ellipse2D.Double( ex - 1, ey - 1, 3, 3 ) );
@@ -279,7 +279,7 @@ public class VisualizationPanel extends JComponent {
             for ( int x = range.negate().intValue()+1; x <= range.intValue(); ++x ) {
                 for ( int y = range.negate().intValue()+1; y <= range.intValue(); ++y ) {
                     BigDecimal[] point = { new BigDecimal( x ), new BigDecimal( y ) };
-                    BigDecimal val = neuron.calculate( point );
+                    BigDecimal val = neuron.calculate( point )[0];
                     
                     if ( val.compareTo( BigDecimal.ZERO ) > 0 ) {
                         g2d.setColor( Color.GREEN.darker() );

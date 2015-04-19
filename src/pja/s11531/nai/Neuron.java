@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 /**
  * Created by s11531 on 2015-03-16.
  */
-public class Neuron {
+public class Neuron implements BlackBox {
     private final BigDecimal[]     weights;
     private final TransferFunction func;
     
@@ -23,7 +23,8 @@ public class Neuron {
         this.func = func;
     }
     
-    public BigDecimal calculate ( BigDecimal[] inputs ) {
+    @Override
+    public BigDecimal[] calculate ( BigDecimal[] inputs ) {
         if ( inputs.length != weights.length - 1 ) {
             throw new IllegalArgumentException( "Wrong number of inputs provided" );
         }
@@ -35,7 +36,7 @@ public class Neuron {
         }
         net = net.add( getBias().multiply( BigDecimal.ONE.negate() ) );
         
-        return func.transfer( net );
+        return new BigDecimal[] { func.transfer( net ) };
     }
     
     public Neuron learn ( BigDecimal[] input, BigDecimal error, BigDecimal learningFactor ) {
@@ -61,6 +62,16 @@ public class Neuron {
     
     public TransferFunction getFunc () {
         return func;
+    }
+    
+    @Override
+    public int getInputLength() {
+        return weights.length-1;
+    }
+    
+    @Override
+    public int getOutputLength () {
+        return 1;
     }
     
     public BigDecimal difference ( Neuron toCompare ) {

@@ -41,7 +41,7 @@ public class LearningSetFactoryTest {
     
         for ( LearningElement element : elements ) {
             System.out.println(element.toString());
-            for ( BigDecimal coordinate : element.getArguments() ) {
+            for ( BigDecimal coordinate : element.getInput() ) {
                 assert(coordinate.compareTo( variance ) <= 0);
             }
         }

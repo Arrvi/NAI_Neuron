@@ -60,7 +60,7 @@ public class LearningSetFactory {
                                                 } )
                                                 .collect( Collectors.toList() )
                                                 .toArray( new BigDecimal[center.length] );
-            learningSet[i] = new LearningElement( coordinates, memberClass );
+            learningSet[i] = new LearningElement( coordinates, new BigDecimal[]{memberClass} );
         }
     }
     
