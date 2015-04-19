@@ -49,6 +49,11 @@ public class StepTransferFunction implements TransferFunction {
         }
     }
     
+    @Override
+    public BigDecimal derivativeTransfer ( BigDecimal x ) {
+        throw new ArithmeticException( "Cannot differentiate discrete function" );
+    }
+    
     public boolean isCeil () {
         return ( funcType & CEIL ) != 0;
     }

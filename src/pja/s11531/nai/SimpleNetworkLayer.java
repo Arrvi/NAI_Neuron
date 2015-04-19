@@ -40,6 +40,6 @@ public class SimpleNetworkLayer implements BlackBox {
     }
     
     public BigDecimal[] calculateError(BigDecimal[] input, BigDecimal[] error) {
-        
+        return null;
     }
 }

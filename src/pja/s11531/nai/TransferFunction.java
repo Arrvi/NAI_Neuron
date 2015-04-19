@@ -7,4 +7,5 @@ import java.math.BigDecimal;
  */
 public interface TransferFunction {
     BigDecimal transfer(BigDecimal x);
+    BigDecimal derivativeTransfer(BigDecimal x);
 }
