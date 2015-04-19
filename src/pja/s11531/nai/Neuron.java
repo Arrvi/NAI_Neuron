@@ -38,16 +38,14 @@ public class Neuron {
         return func.transfer( net );
     }
     
-    public Neuron learn ( BigDecimal[] learningSet, BigDecimal expectedValue, BigDecimal learningFactor ) {
-        BigDecimal calculatedValue = calculate( learningSet );
-        
+    public Neuron learn ( BigDecimal[] input, BigDecimal error, BigDecimal learningFactor ) {
         BigDecimal[] newWeights = new BigDecimal[weights.length];
         
         for ( int i = 0; i < weights.length; ++i ) {
             newWeights[i] = weights[i].add(
-                    expectedValue.subtract( calculatedValue )
-                                 .multiply( ( i < weights.length - 1 ) ? learningSet[i] : BigDecimal.ONE.negate() )
-                                 .multiply( learningFactor ) );
+                    error
+                            .multiply( ( i < weights.length - 1 ) ? input[i] : BigDecimal.ONE.negate() )
+                            .multiply( learningFactor ) );
         }
         
         return new Neuron( newWeights, func );
@@ -65,15 +63,16 @@ public class Neuron {
         return func;
     }
     
-    public BigDecimal difference (Neuron toCompare) {
+    public BigDecimal difference ( Neuron toCompare ) {
         if ( toCompare.weights.length != weights.length ) {
             throw new IllegalArgumentException( "Cannot calculate difference between neurons with different number of inputs" );
         }
         
         BigDecimal result = BigDecimal.ZERO;
-    
+        
         for ( int i = 0; i < weights.length; i++ ) {
-            result = result.add( weights[i].subtract( toCompare.weights[i] ).abs() );
+            result = result.add( weights[i].subtract( toCompare.weights[i] )
+                                           .abs() );
         }
         
         return result;

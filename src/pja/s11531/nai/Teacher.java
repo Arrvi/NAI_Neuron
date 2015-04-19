@@ -1,7 +1,6 @@
 package pja.s11531.nai;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,7 +33,9 @@ public class Teacher implements Callable<Neuron> {
         Collections.shuffle( elements );
         
         for ( LearningElement element : elements ) {
-            currentState = currentState.learn( element.getArguments(), element.getValue(), learningFactor );
+            BigDecimal error = element.getValue()
+                                      .subtract( currentState.calculate( element.getArguments() ) );
+            currentState = currentState.learn( element.getArguments(), error, learningFactor );
         }
         
         return currentState;
