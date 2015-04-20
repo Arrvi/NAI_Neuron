@@ -25,6 +25,12 @@ public class Neuron implements BlackBox {
     
     @Override
     public BigDecimal[] calculate ( BigDecimal[] inputs ) {
+        BigDecimal net = calculateNET( inputs );
+        
+        return new BigDecimal[] { func.transfer( net ) };
+    }
+    
+    protected BigDecimal calculateNET ( BigDecimal[] inputs ) {
         if ( inputs.length != weights.length - 1 ) {
             throw new IllegalArgumentException( "Wrong number of inputs provided" );
         }
@@ -35,8 +41,7 @@ public class Neuron implements BlackBox {
             net = net.add( inputs[i].multiply( weights[i] ) );
         }
         net = net.add( getBias().multiply( BigDecimal.ONE.negate() ) );
-        
-        return new BigDecimal[] { func.transfer( net ) };
+        return net;
     }
     
     public Neuron learn ( BigDecimal[] input, BigDecimal error, BigDecimal learningFactor ) {

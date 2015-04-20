@@ -16,7 +16,8 @@ public class UnipolarSigmoidTransferFunction implements TransferFunction {
     
     @Override
     public BigDecimal transfer ( BigDecimal x ) {
-        return BigDecimal.ONE.divide( BigDecimal.ONE.add( BigDecimalMath.exp( alpha.multiply( x ).negate() ) ), BigDecimal.ROUND_HALF_UP );
+        return BigDecimal.ONE.divide( BigDecimal.ONE.add( BigDecimalMath.exp( alpha.multiply( x )
+                                                                                   .negate() ) ), BigDecimal.ROUND_HALF_UP );
     }
     
     @Override
