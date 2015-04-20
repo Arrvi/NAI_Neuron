@@ -37,7 +37,12 @@ public class SimpleNetworkLayer implements BlackBox {
     }
     
     public void learn ( BigDecimal[] input, BigDecimal[] error, BigDecimal learningFactor ) {
-        
+        if (neurons.length != error.length ) {
+            throw new IllegalArgumentException("Wrong error length");
+        }
+        for (int i = 0; i < neurons.length; i++) {
+            neurons[i] = neurons[i].learn(input, error[i], learningFactor);
+        }
     }
     
     public BigDecimal[] calculateError ( BigDecimal[] input, BigDecimal[] nextLayerErrors ) {
