@@ -1,10 +1,10 @@
 package pja.s11531.nai;
 
 import org.junit.Test;
+import pja.s11531.nai.neuron.Neuron;
+import pja.s11531.nai.neuron.StepTransferFunction;
 
 import java.math.BigDecimal;
-
-import static org.junit.Assert.*;
 
 public class NeuronTest {
     @Test

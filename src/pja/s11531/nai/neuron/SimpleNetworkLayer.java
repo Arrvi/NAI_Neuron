@@ -1,7 +1,6 @@
-package pja.s11531.nai;
+package pja.s11531.nai.neuron;
 
 import java.math.BigDecimal;
-import java.util.stream.IntStream;
 
 /**
  * Created by Kris on 2015-04-19.

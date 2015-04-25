@@ -1,8 +1,8 @@
-package pja.s11531.nai.gui;
+package pja.s11531.nai.neuron.gui;
 
-import pja.s11531.nai.LearningSetFactory;
-import pja.s11531.nai.Neuron;
-import pja.s11531.nai.Teacher;
+import pja.s11531.nai.neuron.LearningSetFactory;
+import pja.s11531.nai.neuron.Neuron;
+import pja.s11531.nai.neuron.Teacher;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import static pja.s11531.nai.gui.VisualizationPanel.DrawOption.*;
+import static pja.s11531.nai.neuron.gui.VisualizationPanel.DrawOption.*;
 
 public class LearningDialog extends JDialog {
     private JPanel             contentPane;

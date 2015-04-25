@@ -1,6 +1,6 @@
-package pja.s11531.nai.gui;
+package pja.s11531.nai.neuron.gui;
 
-import pja.s11531.nai.*;
+import pja.s11531.nai.neuron.*;
 
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import static pja.s11531.nai.gui.VisualizationPanel.DrawOption.*;
+import static pja.s11531.nai.neuron.gui.VisualizationPanel.DrawOption.*;
 
 /**
  * Created by s11531 on 2015-03-19.
@@ -42,57 +42,61 @@ public class NeuronTester {
     private JButton                   clearButton;
     private JComboBox                 learningSetMemberClassCombo;
     private JTextField                learningSetMemberClass;
-    private JCheckBox divideFactor;
+    private JCheckBox                 divideFactor;
     private Neuron                    neuron;
     
     public NeuronTester () {
-        calculateButton.addActionListener( ( evt ) -> {
-            calculate();
-            learnButton.setEnabled( true );
-        } );
-        clearButton.addActionListener( ( evt ) -> {
-            neuron = null;
-            visualizationPane.setNeuron( null );
-            learnButton.setEnabled( false );
-        } );
+        calculateButton.addActionListener(
+                ( evt ) -> {
+                    calculate();
+                    learnButton.setEnabled( true );
+                } );
+        clearButton.addActionListener(
+                ( evt ) -> {
+                    neuron = null;
+                    visualizationPane.setNeuron( null );
+                    learnButton.setEnabled( false );
+                } );
         pointPickerButton.addActionListener( ( evt ) -> startPointPicker() );
-        addLearningSet.addActionListener( ( evt ) -> {
-            try {
-                parseAndAddLearningSet();
-            } catch ( NumberFormatException e ) {
-                JOptionPane.showMessageDialog( frame, "Invalid number format", "Error", JOptionPane.ERROR_MESSAGE );
-            } catch ( Exception e ) {
-                JOptionPane.showMessageDialog( frame, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE );
-            }
-        } );
+        addLearningSet.addActionListener(
+                ( evt ) -> {
+                    try {
+                        parseAndAddLearningSet();
+                    } catch ( NumberFormatException e ) {
+                        JOptionPane.showMessageDialog( frame, "Invalid number format", "Error", JOptionPane.ERROR_MESSAGE );
+                    } catch ( Exception e ) {
+                        JOptionPane.showMessageDialog( frame, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE );
+                    }
+                } );
         learningSetsList.setModel( listModel );
         learningSetMemberClassCombo.addActionListener( ( evt ) -> setMemberClass() );
-        learningSetsList.addMouseListener( new MouseAdapter() {
-            JPopupMenu menu = new JPopupMenu();
-            
-            {
-                JMenuItem item;
-                item = new JMenuItem( "Randomize" );
-                item.addActionListener( ( evt ) -> randomize() );
-                menu.add( item );
-                item = new JMenuItem( "Delete" );
-                item.addActionListener( ( evt ) -> deleteItem() );
-                menu.add( item );
-            }
-            
-            private void deleteItem () {
-                listModel.removeElementAt( learningSetsList.getSelectedIndex() );
-                updateLearningSets();
-            }
-            
-            private void randomize () {
-                learningSetsList.getSelectedValue()
-                                .setNewSeed();
-                updateLearningSets();
-            }
-            
-            @Override
-            public void mousePressed ( MouseEvent e ) {
+        learningSetsList.addMouseListener(
+                new MouseAdapter() {
+                    JPopupMenu menu = new JPopupMenu();
+                    
+                    {
+                        JMenuItem item;
+                        item = new JMenuItem( "Randomize" );
+                        item.addActionListener( ( evt ) -> randomize() );
+                        menu.add( item );
+                        item = new JMenuItem( "Delete" );
+                        item.addActionListener( ( evt ) -> deleteItem() );
+                        menu.add( item );
+                    }
+                    
+                    private void deleteItem () {
+                        listModel.removeElementAt( learningSetsList.getSelectedIndex() );
+                        updateLearningSets();
+                    }
+                    
+                    private void randomize () {
+                        learningSetsList.getSelectedValue()
+                                        .setNewSeed();
+                        updateLearningSets();
+                    }
+                    
+                    @Override
+                    public void mousePressed ( MouseEvent e ) {
                 popupCheck( e );
             }
             

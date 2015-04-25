@@ -1,7 +1,6 @@
-package pja.s11531.nai.gui;
+package pja.s11531.nai.neuron.gui;
 
 import eu.arrvi.common.UIUtilities;
-import jdk.internal.util.xml.impl.Input;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

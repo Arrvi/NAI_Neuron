@@ -1,4 +1,4 @@
-package pja.s11531.nai.gui;
+package pja.s11531.nai.neuron.gui;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,9 +1,9 @@
-package pja.s11531.nai.gui;
+package pja.s11531.nai.neuron.gui;
 
-import pja.s11531.nai.LearningElement;
-import pja.s11531.nai.LearningSetFactory;
-import pja.s11531.nai.Neuron;
-import pja.s11531.nai.StepTransferFunction;
+import pja.s11531.nai.neuron.LearningElement;
+import pja.s11531.nai.neuron.LearningSetFactory;
+import pja.s11531.nai.neuron.Neuron;
+import pja.s11531.nai.neuron.StepTransferFunction;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,7 +15,7 @@ import java.math.RoundingMode;
 import java.util.EnumSet;
 import java.util.List;
 
-import static pja.s11531.nai.gui.VisualizationPanel.DrawOption.*;
+import static pja.s11531.nai.neuron.gui.VisualizationPanel.DrawOption.*;
 
 /**
  * Created by Kris on 2015-03-20.

@@ -1,4 +1,4 @@
-package pja.s11531.nai;
+package pja.s11531.nai.neuron;
 
 /**
  * Created by Kris on 2015-03-24.

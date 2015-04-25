@@ -1,4 +1,4 @@
-package pja.s11531.nai;
+package pja.s11531.nai.neuron;
 
 import java.math.BigDecimal;
 import java.util.Arrays;

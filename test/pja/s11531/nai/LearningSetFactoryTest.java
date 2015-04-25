@@ -3,6 +3,9 @@ package pja.s11531.nai;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import pja.s11531.nai.neuron.Distribution;
+import pja.s11531.nai.neuron.LearningElement;
+import pja.s11531.nai.neuron.LearningSetFactory;
 
 import java.math.BigDecimal;
 import java.util.Arrays;

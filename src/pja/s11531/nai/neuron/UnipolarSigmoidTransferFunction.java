@@ -1,4 +1,4 @@
-package pja.s11531.nai;
+package pja.s11531.nai.neuron;
 
 import org.nevec.rjm.BigDecimalMath;
 
