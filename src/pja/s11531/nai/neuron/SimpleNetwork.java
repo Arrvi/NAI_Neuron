@@ -6,7 +6,6 @@ import java.math.BigDecimal;
  * Created by Kris on 2015-04-19.
  */
 public class SimpleNetwork implements BlackBox {
-    private final static boolean DO_RECALCULATE_WHILE_LEARNING = true;
     private SimpleNetworkLayer[] layers;
     
     public SimpleNetwork ( SimpleNetworkLayer[] layers ) {
@@ -54,10 +53,8 @@ public class SimpleNetwork implements BlackBox {
         }
     
         layers[0].learn( element.getInput(), errors[0], learningFactor );
-        if ( DO_RECALCULATE_WHILE_LEARNING ) outputs[0] = layers[0].calculate( element.getInput() );
         for ( int i = 1; i < layers.length; i++ ) {
             layers[i].learn( outputs[i-1], errors[i], learningFactor );
-            if ( DO_RECALCULATE_WHILE_LEARNING ) outputs[i] = layers[i].calculate( outputs[i-1] );
         }
     }
     
