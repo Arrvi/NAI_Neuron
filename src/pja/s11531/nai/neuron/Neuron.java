@@ -1,8 +1,11 @@
 package pja.s11531.nai.neuron;
 
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
 
 /**
  * Created by s11531 on 2015-03-16.
@@ -10,6 +13,14 @@ import java.util.stream.Collectors;
 public class Neuron implements BlackBox {
     private final BigDecimal[]     weights;
     private final TransferFunction func;
+    
+    public static Neuron getInstance( double[] weights, TransferFunction func ) {
+        BigDecimal[] w = new BigDecimal[weights.length];
+        for ( int i = 0; i < weights.length; i++ ) {
+            w[i] = new BigDecimal( weights[i] );
+        }
+        return new Neuron( w, func );
+    }
     
     public Neuron ( BigDecimal[] weights, TransferFunction func ) {
         this.weights = weights;

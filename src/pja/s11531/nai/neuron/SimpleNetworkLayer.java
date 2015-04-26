@@ -46,7 +46,7 @@ public class SimpleNetworkLayer implements BlackBox {
     
     public BigDecimal[] calculateError ( BigDecimal[] input, BigDecimal[] nextLayerErrors ) {
         if ( getInputLength() != input.length ) {
-            throw new IllegalArgumentException( "Wrong input length" );
+            throw new IllegalArgumentException( String.format( "Wrong input length %d != %d", getInputLength(), input.length ) );
         }
         if ( neurons.length != nextLayerErrors.length ) {
             throw new IllegalArgumentException( "Wrong error length" );
@@ -67,6 +67,14 @@ public class SimpleNetworkLayer implements BlackBox {
             }
         }
         
-        return errors;
+        return layerErrors;
+    }
+    
+    public void printLayer () {
+        System.out.println("\tNeural network layer");
+        for ( int i = 0; i < neurons.length; i++ ) {
+            System.out.printf( "\tNeuron %d:%n\t\t", i );
+            System.out.println(neurons[i].toString());
+        }
     }
 }
