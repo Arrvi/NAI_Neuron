@@ -63,10 +63,11 @@ public class SimpleNetwork implements BlackBox {
     }
     
     private BigDecimal[] calculateFirstError ( BigDecimal[] expectedOutput, BigDecimal[] calculatedOutput ) {
+        BigDecimal[] error = new BigDecimal[expectedOutput.length];
         for ( int i = 0; i < expectedOutput.length; i++ ) {
-            expectedOutput[i] = expectedOutput[i].subtract( calculatedOutput[i] );
+            error[i] = expectedOutput[i].subtract( calculatedOutput[i] );
         }
-        return expectedOutput;
+        return error;
     }
     
     public void printNetwork () {
