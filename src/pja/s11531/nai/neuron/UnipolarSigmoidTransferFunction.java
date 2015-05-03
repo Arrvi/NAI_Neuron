@@ -14,7 +14,11 @@ public class UnipolarSigmoidTransferFunction implements TransferFunction {
     public UnipolarSigmoidTransferFunction ( BigDecimal alpha ) {
         this.alpha = alpha;
     }
-    
+
+    public UnipolarSigmoidTransferFunction() {
+        this(BigDecimal.ONE);
+    }
+
     @Override
     public BigDecimal transfer ( BigDecimal x ) {
         return BigDecimal.ONE.divide( BigDecimal.ONE.add( BigDecimalMath.exp( alpha.multiply( x )

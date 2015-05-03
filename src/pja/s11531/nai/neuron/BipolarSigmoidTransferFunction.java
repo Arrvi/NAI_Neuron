@@ -14,7 +14,11 @@ public class BipolarSigmoidTransferFunction implements TransferFunction {
     public BipolarSigmoidTransferFunction ( BigDecimal alpha ) {
         this.alpha = alpha;
     }
-    
+
+    public BipolarSigmoidTransferFunction() {
+        this(BigDecimal.ONE);
+    }
+
     @Override
     public BigDecimal transfer ( BigDecimal x ) {
         return new BigDecimal( 2 ).divide( BigDecimal.ONE.add( BigDecimalMath.exp( alpha.multiply( x )
