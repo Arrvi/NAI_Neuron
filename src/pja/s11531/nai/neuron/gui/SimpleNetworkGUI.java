@@ -1,6 +1,7 @@
 package pja.s11531.nai.neuron.gui;
 
 import org.json.JSONException;
+import pja.s11531.nai.neuron.LearningElement;
 import pja.s11531.nai.neuron.SimpleNetwork;
 import pja.s11531.nai.neuron.util.FileInterpreter;
 
@@ -9,6 +10,7 @@ import javax.swing.filechooser.FileFilter;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 
 /**
  * Created by Kris on 2015-04-26.
@@ -46,7 +48,21 @@ public class SimpleNetworkGUI {
                 if ( selectedFile == null ) return;
                 
                 FileInterpreter interpreter = new FileInterpreter(selectedFile);
-                visualization.setNetwork((SimpleNetwork) interpreter.getContents());
+                SimpleNetwork simpleNetwork = (SimpleNetwork) interpreter.getContents();
+
+                LearningElement learningElement = new LearningElement(
+                        new BigDecimal[] {
+                                new BigDecimal( -3 ),
+                                new BigDecimal( 4 )
+                        }, new BigDecimal[] {
+                        BigDecimal.ONE,
+                        BigDecimal.ZERO,
+                        BigDecimal.ONE
+                } );
+                
+                simpleNetwork.learn(learningElement, BigDecimal.ONE);
+                
+                visualization.setNetwork(simpleNetwork);
             } catch (ClassNotFoundException | IOException | JSONException e1) {
                 e1.printStackTrace();
             }

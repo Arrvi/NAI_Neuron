@@ -13,6 +13,8 @@ import java.awt.image.BufferedImage;
 import java.math.BigDecimal;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import static pja.s11531.nai.neuron.gui.NetworkVisualizationPanel.DrawOption.*;
 
@@ -30,7 +32,7 @@ public class NetworkVisualizationPanel extends JComponent {
     private BigDecimal range = BigDecimal.TEN.setScale(defaultScale, BigDecimal.ROUND_HALF_UP);
     private final BigDecimal doubleRange = range.multiply(TWO);
     private int outputResolution = 100;
-    private double maxOpacity = 1;
+    private double maxOpacity = 0.9;
 
     private EnumSet<DrawOption> drawOptions = EnumSet.of(DrawOption.DRAW_AXIS,
             DrawOption.DRAW_AXIS_TICKS,
@@ -210,54 +212,50 @@ public class NetworkVisualizationPanel extends JComponent {
         if (learningSets != null && !learningSets.isEmpty()) drawLearningSets(g2d);
     }
 
-    private BufferedImage networkOutputBuffer;
+    private BufferedImage[] networkOutputBuffer;
 
     private void drawNetworkClasses(Graphics2D g2d) {
         if (networkOutputBuffer == null) generateNetworkOutput();
-        g2d.drawImage(networkOutputBuffer, 0, 0, getWidth(), getHeight(), 0, 0, outputResolution, outputResolution, this);
+        for (BufferedImage channel : networkOutputBuffer) {
+            g2d.drawImage(channel, 0, 0, getWidth(), getHeight(), 0, 0, outputResolution, outputResolution, this);
+        }
     }
+    
+    Executor outputExecutor = Executors.newFixedThreadPool(16);
 
     private void generateNetworkOutput() {
         if (networkOutputBuffer == null) createBuffer();
-
-        Color[] neuronColor = new Color[network.getOutputLength()];
-        for (int i = 0; i < neuronColor.length; i++) {
-            neuronColor[i] = Color.getHSBColor((i + 1) / (float) (neuronColor.length), 1, 0.5f);
-        }
-
-        Graphics2D g2d = (Graphics2D) networkOutputBuffer.getGraphics();
-
-        for (int y = 0; y < outputResolution; y++) {
-            System.out.printf("Generating row %d of %d%n", y, outputResolution);
-            for (int x = 0; x < outputResolution; x++) {
-                BigDecimal[] output = network.calculate(new BigDecimal[]{
-                        widthToUnits(x, outputResolution),
-                        heightToUnits(y, outputResolution)
-                });
-                int[] c = {0, 0, 0};
-                for (int i = 0; i < output.length; i++) {
-//                    Color color = new Color(neuronColor[i].getRGB() +
-//                            ((int) (maxOpacity * output[i].doubleValue() * 0xff) << 24),
-//                            true);
-//                    g2d.setColor(color);
-//                    g2d.drawLine(x,y,x,y);
-                    c[0] += neuronColor[i].getRed() * (maxOpacity * output[i].doubleValue());
-                    c[1] += neuronColor[i].getGreen() * (maxOpacity * output[i].doubleValue());
-                    c[2] += neuronColor[i].getBlue() * (maxOpacity * output[i].doubleValue());
-                }
-                if (c[0] > 0xff) c[0] = 0xff;
-                if (c[1] > 0xff) c[1] = 0xff;
-                if (c[2] > 0xff) c[2] = 0xff;
-                
-                networkOutputBuffer.setRGB(x, y, 0xff000000+(c[0] << 16) + (c[1] << 8) + c[2]);
+        
+        outputExecutor.execute(()->{
+            Color[] neuronColor = new Color[network.getOutputLength()];
+            for (int i = 0; i < neuronColor.length; i++) {
+                neuronColor[i] = Color.getHSBColor((i + 1) / (float) (neuronColor.length), 1, 0.5f);
             }
-        }
 
-        System.out.println("Done.");
+            for (int y = 0; y < outputResolution; y++) {
+                System.out.printf("Generating row %d of %d%n", y, outputResolution);
+                for (int x = 0; x < outputResolution; x++) {
+                    BigDecimal[] output = network.calculate(new BigDecimal[]{
+                            widthToUnits(x, outputResolution),
+                            heightToUnits(y, outputResolution)
+                    });
+                    for (int i = 0; i < output.length; i++) {
+                        int alpha = (int) (output[i].doubleValue() * maxOpacity * 0xff);
+                        networkOutputBuffer[i].setRGB(x, y, neuronColor[i].getRGB() & 0xffffff + (alpha << 24));
+                    }
+                }
+                repaint();
+            }
+
+            System.out.println("Done.");
+        });
     }
 
     private void createBuffer() {
-        networkOutputBuffer = new BufferedImage(outputResolution, outputResolution, BufferedImage.TYPE_INT_ARGB);
+        networkOutputBuffer = new BufferedImage[network.getOutputLength()];
+        for (int i = 0; i < networkOutputBuffer.length; i++) {
+            networkOutputBuffer[i] = new BufferedImage(outputResolution, outputResolution, BufferedImage.TYPE_INT_ARGB);
+        }
     }
 
     public int getOutputResolution() {
