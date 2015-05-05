@@ -42,10 +42,54 @@
           {
             "weights": [
               2,
+              14,
+              -3,
+              0,
+              2
+            ],
+            "function": "UnipolarSigmoidTransferFunction"
+          },
+          {
+            "weights": [
+              2,
+              -15,
+              7,
+              -2,
+              -8
+            ],
+            "function": "UnipolarSigmoidTransferFunction"
+          },
+          {
+            "weights": [
+              1,
+              3,
+              -4,
+              -3,
+              11
+            ],
+            "function": "UnipolarSigmoidTransferFunction"
+          },
+          {
+            "weights": [
+              1,
+              2,
+              -3,
+              -4,
+              5
+            ],
+            "function": "UnipolarSigmoidTransferFunction"
+          }
+        ]
+      },
+      {
+        "neurons": [
+          {
+            "weights": [
+              2,
               4,
               1,
               3,
-              0
+              -5
             ],
             "function": "UnipolarSigmoidTransferFunction"
           },
@@ -53,9 +97,9 @@
             "weights": [
               3,
               -5,
-              3,
+              13,
               2,
-              0
+              15
             ],
             "function": "UnipolarSigmoidTransferFunction"
           },
@@ -65,7 +109,7 @@
               3,
               -4,
               -3,
-              0
+              5
             ],
             "function": "UnipolarSigmoidTransferFunction"
           }
